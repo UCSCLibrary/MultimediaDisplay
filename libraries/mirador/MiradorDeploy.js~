@@ -1,0 +1,26 @@
+jQuery(function() {
+    Mirador({
+        "id": "viewer",
+        "data": [
+            {
+                "manifestUri": "data/Walters/bd183mz0176/Manifest.json",
+                "title": "MS 530",
+                "widgets": [{
+                    "height": 500,
+                    "openAt": "fol. W.688a",
+                    "type": "imageView",
+                    "width": 500
+                }, {
+                    "height": 250,
+                    "type": "thumbnailsView",
+                    "width": 500
+                }]
+            },{ 
+                "manifestUri": "data/Walters/zp295gk6974/manifest.json",
+                "location": "Stanford University", 
+                "title": "MS 5", 
+                "widgets": [] 
+            }
+        ]
+    });
+});

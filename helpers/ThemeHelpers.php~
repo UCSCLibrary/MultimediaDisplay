@@ -1,0 +1,11 @@
+
+function contribution_admin_header($subsections = array())
+{
+    $mainTitle = __('Contribution');
+    $subsections = array_merge(array($mainTitle), $subsections);
+    $displayTitle = implode(' | ', $subsections);
+    $head = array('title' => $displayTitle,
+            'bodyclass' => 'contribution',
+            'content_class' => 'horizontal-nav');
+    echo head($head);
+}

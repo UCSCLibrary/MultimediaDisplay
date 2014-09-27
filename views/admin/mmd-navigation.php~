@@ -1,0 +1,25 @@
+<?php 
+/**
+ * MultimediaDisplay Admin Nav Bar View Helper file
+ *
+ * @copyright Copyright 2014 UCSC Library Digital Initiatives
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GNU GPLv3
+ * @package MultimediaDisplay
+ */
+
+?>
+
+<nav id="section-nav" class="navigation vertical">
+<?php
+    
+    $navArray = array(
+        'Setup' => array('label'=>__('Setup'), 'uri'=>url('multimedia-display') ),
+        'Manage Display Profiles' => array('label'=>__('Manage Display Profiles'), 'uri'=>url('multimedia-display/profile') ),
+        'Manage Profile Assignments' => array('label'=> __('Manage Profile Assignemtns'), 'uri'=>url('multimedia-display/assign') ) 
+    );
+    $navArray['Contributors'] = array('label'=> __('Contributions'), 
+                                        'uri'=>url('contribution/items?sort_field=added&sort_dir=d') );
+ 
+    echo nav($navArray, 'contribution_navigation');
+?>
+</nav>

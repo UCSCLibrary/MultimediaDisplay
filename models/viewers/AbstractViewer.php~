@@ -1,0 +1,83 @@
+<?php
+/**
+ * Multimedia Display Abstract Viewer
+ * 
+ * @copyright Copyright 2014 UCSC Library Digital Initiatives
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GNU GPLv3
+ * @package MultimediaDisplay
+ */
+
+/**
+ * Multimedia Display Abstract Viewer class
+ * 
+ */
+class Mmd_Abstract_Viewer
+{
+    public $name;
+    //public $allowedFormats;
+    //public $allowedMimeTypes;
+
+    //block below to define/implement in subclass
+    protected $_jsPrefix;
+    protected $_paramInfo;
+    protected $_allowedFiletypes;
+    public abstract head();
+    public abstract getBodyHtml();
+
+    /**
+     * Retrieve viewer parameters
+     *
+     * @return array Information about all parameters supported for customizing the viewer display
+     */
+    public function getParameterInfo() {
+        return $this->_paramInfo;
+    }
+
+    public function getJsPrefix() {
+        return $this->_jsPrefix;
+    }
+
+     /**
+     * Install default profile
+     *
+     * Install default item types, elements, and profiles for easy setup
+     *
+     * @param array An array of parameters with names and descriptions
+     *  of the default values we are setting up
+     * @return void
+     */
+    public static function InstallDefaults($params) {
+
+        $itemType = new ItemType();
+        $itemType->setName($params['typeName']);
+        $itemType->setDescription($params['typeDesc']);
+
+        $profile = new MmdProfile();
+        $profile->name = $params['profileName'];
+        $profile->viewer = $this->name;
+
+        foreach($this->_paramInfo as $param) {
+            $element = new Element();
+            $element->setElementSet('Item Type Metadata');
+            $element->setName($param['name']);
+            $element->setDescription($param['description']);
+            $element_id = $element->save();
+
+            $itemType->addElement($element);
+
+            $profile->setAuxParam($param['name'],$param['default'],1);
+            $profile->setAuxParam($param['name'],$element_id,0);
+        }
+        $item_type_id = $itemType->save();
+        $profile_id = $profile->save();
+
+        $assign = new MmdAssign();
+        $assign->item_type_id = $item_type_id;
+        $assign->profile_id = $profile_id;
+        $assign->filetypes = $this->_allowedFiletypes;
+        $assign->save();
+    }
+
+}
+
+?>

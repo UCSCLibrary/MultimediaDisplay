@@ -1,0 +1,165 @@
+<?php
+/**
+ * Multimedia Display Mirador Viewer
+ * 
+ * @copyright Copyright 2014 UCSC Library Digital Initiatives
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GNU GPLv3
+ * @package MultimediaDisplay
+ */
+
+/**
+ * Multimedia Display Mirador Viewer class
+ * 
+ */
+class Mmd_Mirador_Viewer extends Mmd_Abstract_Viewer
+{
+
+    
+     /**
+     * Install default profile
+     *
+     * Install default item types, elements, and profiles for easy setup
+     *
+     * @return void
+     */
+    public static function InstallDefaults() {
+        $itemType = new ItemType();
+        $itemType->save();
+
+        $element = new Element();
+        $element->save();
+
+        $profile = new Mmd???();
+        $profile->name = '';
+        $profile->viewer = '';
+        $profile->save();
+    }
+
+    /**
+     * Revert to default profile
+     *
+     * Re-install default item types, elements, and profiles
+     *
+     * @return void
+     */
+    public static function RevertDefaults() {
+        $defaultProfile = get_db()->getTable('Mmd???')->findBy(array('name'=>''));
+        $defaultProfile->delete();
+        self::InstallDefaults();
+    }
+
+    /**
+     * Retrieve viewer parameters
+     *
+     * @return array All parameters supported to customize the viewer display
+     */
+    public static function GetParameters() {
+        $params = array(
+            array(
+                'name'=>'',
+                'type'=>'',
+                'value'=>array('','',''),
+                'required'=>false,
+                'default'=>''
+            ),
+            array(
+                'name'=>'',
+                'type'=>'',
+                'value'=>array('','',''),
+                'required'=>false,
+                'default'=>''
+            )
+        );
+        
+        return $params;
+    }
+
+    /**
+     * Retrieve head html
+     *
+     * Retrieves html tags to include in the page header
+     *
+     * @return string Html to include in the header, 
+     * linking to stylesheets and javascript libraries
+     */
+    public function getHeadHtml() {
+
+        ob_start();
+?>
+?<php
+        return ob_get_clean();
+
+    }
+
+
+    /**
+     * Retrieve body html
+     *
+     * Retrieves markup to include in the main content body of item show pages
+     *
+     * @return string Html to include in the header, 
+     * linking to stylesheets and javascript libraries
+     */
+    public function getBodyHtml() {
+      
+        ob_start();
+?>
+<?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Retrieve foot html
+     *
+     * Retrieves markup to include after the main content body 
+     * of item show pages, to trigger js loading
+     *
+     * @return string Html to include in the header, 
+     * linking to stylesheets and javascript libraries
+     */
+    public function getFootHtml() {
+
+    }
+        
+  
+
+
+    public function display() {
+        
+        ob_start();
+        ?>
+        <div id="viewer"></div>
+        <script src="build/mirador/mirador.min.js"></script>
+        <script type="text/javascript">
+        jQuery(function() {
+            Mirador({
+                "id": "viewer",
+                "data": [
+                         {
+                           "manifestUri": "data/Walters/bd183mz0176/Manifest.json",
+                           "title": "MS 530",
+                           "widgets": [{
+                                      "height": 500,
+                                          "openAt": "fol. W.688a",
+                                          "type": "imageView",
+                                          "width": 500
+                                          }, {
+                                      "height": 250,
+                                          "type": "thumbnailsView",
+                                          "width": 500
+                                       }]
+                         },{ 
+                           "manifestUri": "data/Walters/zp295gk6974/manifest.json",
+                           "location": "Stanford University", 
+                           "title": "MS 5", 
+                           "widgets": [] 
+                         }
+                        ]
+                    });
+        });
+        </script> <?php
+        return ob_get_clean();
+    }
+}
+
+?>

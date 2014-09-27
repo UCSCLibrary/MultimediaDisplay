@@ -1,0 +1,87 @@
+<?php
+/**
+ * Multimedia Display Profile add/edit form 
+ *
+ * @package     MultimediaDisplay
+ * @copyright   2014 UCSC Library Digital Initiatives
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GNU GPLv3
+ */
+
+/**
+ * MultimediaDisplay add/edit display profile form class
+ */
+class Mmd_Form_Profile extends Omeka_Form
+{
+    /**
+     * Construct the form.
+     *
+     *@return void
+     */
+    public function init($profile_id)
+    {
+        parent::init();
+        $this->_registerElements($profile_id);
+    }
+
+    /**
+     * Define the form elements.
+     *
+     *@return void
+     */
+    private function _registerElements($profile_id=null)
+    {  
+        if(!is_null($profile_id)) {
+            $profile = get_db()->getTable('MmdProfile')->findById($profile_id);
+            $viewername = $profile->viewer;
+        } else {
+            $profile = new MmdProfile();
+            $params = array();
+            $viewername="";
+        }
+        
+        $this->addElement('select','mmdProfileViewerSelect', 
+           array(
+               'label' => __('Select Viewer'),
+               'description' => __('Select a viewer to use for this display profile. Viewer specific options will then appear below.'),
+               'order' => __('1'),
+               'multiOptions' => $this->_getViewerOptions(),
+               'value' => $viewername
+           )
+        );            
+
+        if($viewername != "") {
+            $this->_registerViewerElements($viewername);
+        } else {
+            foreach(unserialize(get_option('mmd_supported_viewers'))){
+                $this->_registerViewerElements($viewername);
+            }
+        }
+        
+    }
+    private function _registerViewerElements($viewername) {
+        $viewerClass = 'Mmd_'.$viewername."_Viewer";
+        $viewer = new $viewerClass();
+        $params = $viewer->getParameterInfo();
+        foreach($params as $param) {
+            $element = new Mmd_Form_Element_Viewparam($viewerName.'-'.$param->name);
+        }
+
+        //TODO display groups
+    }
+
+
+    /**
+     *Process the form data and execute actions as necessary
+     *
+     *@return bool $success true if successful 
+     */
+    public static function ProcessPost()
+    {
+
+    }
+
+    private function _getViewerOptions() {
+        $viewers = unserialize(get_option('mmd_supported_viewers'));
+        return $viewers;
+    }
+}

@@ -1,0 +1,34 @@
+.description {
+    clear: both;
+    margin-bottom: 35px;
+}
+.savebutton {
+    float: left;
+    clear: both;
+}
+.mmd-profile-add {
+    float:left;
+}
+.mmd-assign-add {
+    float:left;
+}
+
+.mmd-assign-edit {
+    margin-bottom:0px;
+}
+
+.mmd-assign-delete {
+    margin-bottom:0px;
+}
+
+.mmd-profile-edit {
+    margin-bottom:0px;
+}
+
+.mmd-profile-delete {
+   margin-bottom:0px;
+}
+
+.widthless {
+    width:20%;
+}

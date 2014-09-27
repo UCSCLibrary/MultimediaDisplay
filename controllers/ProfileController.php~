@@ -1,0 +1,80 @@
+<?php
+/**
+ * MultimediaDisplay
+ *
+ * @copyright Copyright 2014 UCSC Library Digital Initiatives
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GNU GPLv3
+ * @package MultimediaDisplay
+ */
+
+/**
+ * The MultimediaDisplay Display Profile controller class.
+ */
+class MultimediaDisplay_ProfileController extends Omeka_Controller_AbstractActionController
+{    
+
+/**
+ * By default, forward us to browsing existing display profiles
+ *
+ * This action runs when a user navigates to the profiles page
+ * without specifying another action.
+ *
+ * @return void
+ */
+  public function indexAction()
+  {
+      //forward to browse
+  }
+
+/**
+ * Add a new display profile
+ *
+ * This action runs when a user adds a new display profile.
+ *
+ * @return void
+ */
+  public function addAction()
+  {
+      //process form if submitted
+      //set $this->view->form to empty form
+  }
+
+/**
+ * Browse display profiles
+ *
+ * This action runs when a user browses existing display profiles.
+ *
+ * @return void
+ */
+  public function browseAction()
+  {
+      //set $this->view->profiles to all profiles
+  }
+
+/**
+ * Edit display profiles
+ *
+ * This action runs when a user modifies an existing display profile
+ *
+ * @return void
+ */
+  public function editAction()
+  {                                                             
+      //process form if submitted
+      //set $this->view->form to prefilled profile edit form
+  }
+
+/**
+ * Delete display profile
+ *
+ * This action runs when a user deletes a given display profile.
+ *
+ * @return void
+ */
+  public function deleteAction()
+  {
+      //delete the profile
+      //forward to browse
+  }
+
+}
