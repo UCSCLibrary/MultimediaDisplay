@@ -47,7 +47,6 @@ class MultimediaDisplay_ProfileController extends Omeka_Controller_AbstractActio
  */
   public function browseAction()
   { 
-      
       $profiles = get_db()->getTable('MmdProfile')->findAll();
       if(count($profiles)==0)
           $this->forward('add');
@@ -62,7 +61,7 @@ class MultimediaDisplay_ProfileController extends Omeka_Controller_AbstractActio
  * @return void
  */
   public function editAction()
-  {                     
+  {                  
       $profile_id = $this->_getParam('profile');
       $this->_includeForm($profile_id);
   }
@@ -81,13 +80,22 @@ class MultimediaDisplay_ProfileController extends Omeka_Controller_AbstractActio
       //delete the profile
       $profile_id = $this->_getParam('profile');
       try{
-          $profile = get_record_by_id('MmdProfile',$profile_id);
-          $profile->delete();
+          $assigns = get_db()->getTable('MmdAssign')->findByProfileId($profile_id);
+          foreach($assigns as $assign) {
+              $assign->delete();
+          }
+
+          if($profile = get_record_by_id('MmdProfile',$profile_id)) {
+              $profile->delete();
+              $flashMessenger->addMessage('Profile deleted successfully','success');
+          } else {
+              $flashMessenger->addMessage('Error deleting profile. Profile not found.','error');
+              $this->forward('browse');
+          }
       } catch(Exception $e) {
 	  $flashMessenger->addMessage('Error deleting profile','error');
+          $this->forward('browse');
       }
-
-      $flashMessenger->addMessage('Profile deleted successfully','success');
 
       //forward to browse
       $this->forward('browse');
@@ -96,14 +104,11 @@ class MultimediaDisplay_ProfileController extends Omeka_Controller_AbstractActio
   private function _includeForm( $profile_id = 0 ) {
       
     include_once(dirname(dirname(__FILE__))."/forms/ProfileForm.php");
-    if($profile_id > 0)
-        $form = new Mmd_Form_Profile($profile_id);
-    else
-        $form = new Mmd_Form_Profile();
 
     //initialize flash messenger for success or fail messages
     $flashMessenger = $this->_helper->FlashMessenger;
 
+    $form = new Mmd_Form_Profile();
     try{
       if ($this->getRequest()->isPost()){
 	if($form->isValid($this->getRequest()->getPost()))
@@ -117,6 +122,9 @@ class MultimediaDisplay_ProfileController extends Omeka_Controller_AbstractActio
 
     if( isset($successMessage) )
       $flashMessenger->addMessage($successMessage,'success');
+
+    if($profile_id > 0)
+        $form = new Mmd_Form_Profile($profile_id);
 
     $this->view->form = $form;
 

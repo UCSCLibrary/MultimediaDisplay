@@ -1,6 +1,6 @@
 <?php
 
-$fileserver = $SERVER . '/audio/oralhist/';
+//$fileserver = $SERVER . '/audio/oralhist/';
 $filepath = $cacheFile->media_url;
 
 if(strpos($filepath, 'http://') !== false || strpos($filepath, 'https://') !== false)

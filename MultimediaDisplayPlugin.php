@@ -66,17 +66,8 @@ class MultimediaDisplayPlugin extends Omeka_Plugin_AbstractPlugin
     {
         queue_js_file('MmdAdminScripts');
         queue_css_file('MultimediaDisplay');
-        $viewers = array(
-            'Mirador'=>'Mirador',
-            'Ohms'=>'OHMS Viewer',
-            'MediaElement'=>'MediaElement.js',
-            'BookReader'=>'Internet Archive Book Reader',
-            'Kaltura'=>'Kaltura',
-            //'Youtube'=>'Youtube'
-        );
-        set_option('mmd_supported_viewers',serialize($viewers));
 
-        $this->hookPublicHead();
+        $this->_applyAssignments();
     }
 
     /**
@@ -86,18 +77,22 @@ class MultimediaDisplayPlugin extends Omeka_Plugin_AbstractPlugin
      */
     public function hookPublicHead()
     {
+        queue_css_file('MultimediaDisplay');
+        $this->_applyAssignments();
+    }
+
+    private function _applyAssignments() {
         try{
             $item = get_current_record('Item');
         }catch(Exception $e) {
             if(empty($item))
                 return;
         }
-        
         $profiles = $this->_db->getTable('MmdProfile')->getAssignedProfiles($item);
         if(count($profiles)==0)
             return;
         foreach($profiles as $profile) 
-            $profile->getViewer()->viewerHead();
+            $profile->executeViewerHead();
     }
 
     /**
@@ -153,7 +148,8 @@ class MultimediaDisplayPlugin extends Omeka_Plugin_AbstractPlugin
                 `profile_id` int(10) unsigned NOT NULL,
                 `option` text NOT NULL,
                 `value` text NOT NULL,
-                `static` bool NOT NULL
+                `static` tinyint NOT NULL,
+                `multiple` tinyint DEFAULT NULL
             ) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
             $this->_db->query($sql);
         }catch(Exception $e) {
@@ -161,19 +157,19 @@ class MultimediaDisplayPlugin extends Omeka_Plugin_AbstractPlugin
         }
 
         $this->_installOptions();
-        $viewerDir = dirname(__FILE__).'/models/viewers/';
-        require_once($viewerDir.'AbstractViewer.php');
+        //$viewerDir = dirname(__FILE__).'/models/viewers/';
+        //require_once($viewerDir.'AbstractViewer.php');
 
         $viewers = array(
             'Mirador'=>'Mirador',
             'Ohms'=>'OHMS Viewer',
             'MediaElement'=>'MediaElement.js',
-            'BookReader'=>'Internet Archive Book Reader',
-            'Kaltura'=>'Kaltura',
+            //'BookReader'=>'Internet Archive Book Reader',
+            //'Kaltura'=>'Kaltura',
 //            'Youtube'=>'Youtube'
         );
         set_option('mmd_supported_viewers',serialize($viewers));
-
+/*
         foreach($viewers as $viewerName => $viewerDisplayName) {
             $viewerFileName = $viewerName.'Viewer.php';
             $viewerClassName = 'Mmd_'.$viewerName.'_Viewer';
@@ -181,6 +177,10 @@ class MultimediaDisplayPlugin extends Omeka_Plugin_AbstractPlugin
             $viewer = new $viewerClassName();
             $viewer->installDefaults();
        } 
+*/
+
+        //todo - create a temp directory in files/
+
     }
 
     /**
@@ -198,11 +198,14 @@ class MultimediaDisplayPlugin extends Omeka_Plugin_AbstractPlugin
 	$db->query($sql);
 	$sql = "DROP TABLE IF EXISTS `$db->MmdProfile`; ";
 	$db->query($sql);
-	$sql = "DROP TABLE IF EXISTS `$db->prefix.'MmdAssignAux'`; ";
+	$sql = "DROP TABLE IF EXISTS `".$db->prefix."MmdProfileAux`; ";
 	$db->query($sql);
       }catch(Exception $e) {
 	throw $e;	
       }
+
+      //TODO delete any temp directories
+
     }
 
     /**
@@ -219,9 +222,14 @@ class MultimediaDisplayPlugin extends Omeka_Plugin_AbstractPlugin
             break;
         $profile = $this->_db->getTable('MmdProfile')->getPrimaryAssignedProfile($item);
         if(empty($profile))
-            break;
-        echo $profile->getBodyHtml();
+            return;
+        try{
+            echo $profile->getBodyHtml();
+        } catch (Exception $e) {
+            echo "<h3>Error loading viewer</h3><p>".$e->getMessage()."</p>";
+        }
     }
+
 
     /**
      * Add viewer markup to admin item display pages

@@ -7,11 +7,12 @@
  * @package MultimediaDisplay
  */
 
-mmd_admin_header(array('Display Profiles','Add New Display Profile'));
+mmd_admin_header(array('Display Profiles'));
 echo $this->partial('mmd-navigation.php');
 ?>
 
 <div id="primary">
+    <h1>Add New Display Profile</h1>
     <?php echo flash(); ?>
     <?php echo $form; ?>
 </div>

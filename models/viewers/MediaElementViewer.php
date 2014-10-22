@@ -82,14 +82,13 @@ class Mmd_MediaElement_Viewer extends Mmd_Abstract_Viewer
      *
      * @return null
      */
-    public function viewerHead() {
+    public function viewerHead($params) {
         $libUrl = absolute_url('plugins/MultimediaDisplay/libraries/mediaelement/build/');
         $libUrl = str_replace('admin/','',$libUrl);
 
-        queue_js_url($liburl.'mediaelement-and-player.min.js');
-        queue_css_url($liburl.'mediaelementplayer.css');
+        queue_js_url($libUrl.'mediaelement-and-player.min.js');
+        queue_css_url($libUrl.'mediaelementplayer.css');
     }
-
 
     /**
      * Retrieve body html
@@ -103,13 +102,13 @@ class Mmd_MediaElement_Viewer extends Mmd_Abstract_Viewer
     {
         ob_start();
 ?>
-        <video width="<?php echo($param['width']);?>" height="<?php echo($param['height']);?>" poster="<?php echo($param['posterFilename']);?>" controls="controls" preload="none">
+        <video width="<?php echo($params['width']);?>" height="<?php echo($params['height']);?>" poster="<?php //echo($params['posterFilename']);?>" controls="controls" preload="none">
            <!-- MP4 for Safari, IE9, iPhone, iPad, Android, and Windows Phone 7 -->
-           <source type="video/mp4" src="<?php echo($param['filename']);?>.mp4" />
+           <source type="video/mp4" src="<?php echo($params['url']);?>.mp4" />
            <!-- WebM/VP8 for Firefox4, Opera, and Chrome -->
-           <source type="video/webm" src="<?php echo($param['filename']);?>.webm" />
+           <source type="video/webm" src="<?php echo($params['url']);?>.webm" />
            <!-- Ogg/Vorbis for older Firefox and Opera versions -->
-           <source type="video/ogg" src="<?php echo($param['filename']);?>.ogv" />
+           <source type="video/ogg" src="<?php echo($params['url']);?>.ogv" />
 <?php /*
            <!-- Optional: Add subtitles for each language -->
            <track kind="subtitles" src="subtitles.srt" srclang="en" />
@@ -118,14 +117,15 @@ class Mmd_MediaElement_Viewer extends Mmd_Abstract_Viewer
 
       */?>
            <!-- Flash fallback for non-HTML5 browsers without JavaScript -->
-           <object width="<?php echo($param['width']);?>" height="<?php echo($param['height']);?>" type="application/x-shockwave-flash" data="flashmediaelement.swf">
+           <object width="<?php echo($params['width']);?>" height="<?php echo($params['height']);?>" type="application/x-shockwave-flash" data="flashmediaelement.swf">
               <param name="movie" value="flashmediaelement.swf" />
-              <param name="flashvars" value="controls=true&file=myvideo.mp4" />
+              <param name="flashvars" value="controls=true&file=<?php echo($params['url'])?>.mp4" />
               <!-- Image as a last resort -->
-              <img src="<?php echo($param['posterFilename']);?>" width="<?php echo($param['width']);?>" height="<?php echo($param['height']);?>" title="No video playback capabilities" />
+              <img src="<?php //echo($params['posterFilename']);?>" width="<?php echo($params['width']);?>" height="<?php echo($params['height']);?>" title="No video playback capabilities" />
            </object>
         </video>
         <script>
+           jQuery('video,audio').prependTo(jQuery('#primary'));
            jQuery('video,audio').mediaelementplayer(/* Options */);
         </script>
 <?php

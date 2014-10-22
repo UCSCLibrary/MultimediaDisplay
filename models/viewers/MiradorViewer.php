@@ -31,7 +31,7 @@ class Mmd_Mirador_Viewer extends Mmd_Abstract_Viewer
     public function installDefaults($params=null) {
         $defaultParams = array(
             'typeName' => 'Mirador Gallery',
-            'typeDesc' => 'A collection of images to be displayed using the Mirador viewer',
+            'typeDesc' => 'One or more images to be displayed using the Mirador viewer',
             'profileName' => $this->defaultProfileName,
             'viewerName' => 'Mirador'
         );
@@ -94,11 +94,12 @@ class Mmd_Mirador_Viewer extends Mmd_Abstract_Viewer
             array(
                 'name' => 'colManifestUri',
                 'label' => 'Collection Manifest Url',
-                'description' => 'The URL of the Mirador manifest file for the collection containing this display, if it is not attached to the collection containing the item',
+                'description' => 'The URL of the Mirador manifest file for this display, if it is not attached to the item',
                 'type' => 'string',
                 //'value' => '',
                 'required' => 'false',
-                'default' => ''
+                'default' => '',
+                'files' => 'jpg,png,gif,bmp'
             ),
             array(
                 'name' => 'colTitle',
@@ -138,7 +139,7 @@ class Mmd_Mirador_Viewer extends Mmd_Abstract_Viewer
      *
      * @return null
      */
-    public function viewerHead() {
+    public function viewerHead($params) {
         $liburl = absolute_url('/plugins/MultimediaDisplay/libraries/mirador/');
         $liburl = str_replace('admin/','',$liburl);
 

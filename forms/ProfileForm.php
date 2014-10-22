@@ -42,22 +42,48 @@ class Mmd_Form_Profile extends Omeka_Form
             $profile->loadParams();
             $profile->getItemMap('title');
             $viewername = $profile->viewer;
+            $profilename = $profile->name;
+            $profiledesc = $profile->description;
             //TODO (I think) include hidden field for profile ID
         } else {
             $profile = null;
+            $profile_id = null;
             $params = array();
             $viewername="";
+            $profilename = "";
+            $profiledesc = "";
         }
         
-        $this->addElement('select','mmdProfileViewerSelect', 
+        $this->addElement('text','mmdProfileName', 
            array(
-               'label' => __('Select Viewer'),
-               'description' => __('Select a viewer to use for this display profile. Viewer specific options will then appear below.'),
+               'label' => __('Profile Name'),
+               'description' => __('Choose a name to identify your display profile.'),
                'order' => 1,
-               'multiOptions' => $this->_getViewerOptions(),
-               'value' => $viewername
+               'value' => $profilename
            )
         );
+        
+        $this->addElement('text','mmdProfileDesc', 
+           array(
+               'label' => __('Profile Description'),
+               'description' => __('Describe your display profile.'),
+               'order' => 2,
+               'value' => $profiledesc
+           )
+        );
+        
+        $selectViewerArray =  array(
+            'label' => __('Select Viewer'),
+            'description' => __('Select a viewer to use for this display profile. Viewer specific options will then appear below.'),
+            'order' => 3,
+            'multiOptions' => $this->_getViewerOptions(),
+            'value' => $viewername
+        );
+        
+        //       if($profile_id)
+        //  $selectViewerArray['disabled']=true;
+
+        $this->addElement('select','mmdProfileViewer',$selectViewerArray);
             
         if($viewername != "") {
             $displayGroup = $this->_registerViewerElements($viewername,$profile);
@@ -80,16 +106,24 @@ class Mmd_Form_Profile extends Omeka_Form
                 $order++;
             }
         }
+
+        $this->addElement(
+            'hidden',
+            'mmdProfileId',
+            array('value' => $profile_id)
+        );
+
         // Submit:
         $this->addElement('submit', 'mmd-profile-submit', array(
             'label' => __('Save Display Profile'),
             'order' => 200,
+            'value' => $profile_id,
             'class' => 'savebutton'
         ));
     }
 
     private function _registerViewerElements($viewername,$profile = '') {
-        static $order=1;
+        static $order=3;
         $group = array();
         require_once(dirname(dirname(__FILE__)).'/models/viewers/AbstractViewer.php');
         require_once(dirname(dirname(__FILE__)).'/models/viewers/'.$viewername.'Viewer.php');
@@ -105,12 +139,15 @@ class Mmd_Form_Profile extends Omeka_Form
             $unit = isset($param['unit']) ? $param['unit'] : '';
             if($profile=='') {
                 $value='';
-                $element_id='';
+                $elementID='';
             }else {
                 $value = $profile->getStaticParam($param['name']);
                 $elementID = $profile->getItemMap($param['name']);
-                
             }
+
+            //$files = isset( $param['files'] ) ? $profile->getFileParam($param['name']) : null;
+            $files = isset( $param['files'] ) ? true : null;
+
             switch($param['type']) {
 
             case 'string' :
@@ -121,7 +158,7 @@ class Mmd_Form_Profile extends Omeka_Form
                     'description' => __($param['description']),
                     'value' => $value,
                     'order' => $order,
-                    'decorators' => $this->_getParamDecorators($elementID,$unit)
+                    'decorators' => $this->_getParamDecorators($param['name'],$elementID,$unit,$files)
                 )
                 );   
                 break;
@@ -134,61 +171,66 @@ class Mmd_Form_Profile extends Omeka_Form
                     'description' => __($param['description']),
                     'value' => $value,
                     'order' => $order,
-                    'decorators' => $this->_getParamDecorators($elementID,$unit),
+                    'decorators' => $this->_getParamDecorators($param['name'],$elementID,$unit,$files),
                     'validators' => array('digits')
                 )
                 );   
                 break;
 
             case 'float' :
-                $this->addElement('text',$param['name'], 
+                $this->addElement('text',$param['name'],
                 array(
                     'label' => __($param['label']),
                     'class' => 'five columns alpha',
                     'description' => __($param['description']),
                     'value' => $value,
                     'order' => $order,
-                    'decorators' => $this->_getParamDecorators($elementID,$unit),
+                    'decorators' => $this->_getParamDecorators($param['name'],$elementID,$unit,$files),
                     'validators' => array('float')
                 )
                 );   
                 break;
 
             case 'enum' :
-                $this->addElement('select',$param['name'], 
-                array(
-                    'label' => __($param['label']),
-                    'class' => 'five columns alpha',
-                    'description' => __($param['description']),
-                    'value' => $value,
-                    'order' => $order,
-                    'multiOptions' => $param['value'],
-                    'decorators' => $this->_getParamDecorators($elementID,$unit)
-                )
+                $this->addElement(
+                    'select',
+                    $param['name'],
+                    array(
+                        'label' => __($param['label']),
+                        'class' => 'five columns alpha',
+                        'description' => __($param['description']),
+                        'value' => $value,
+                        'order' => $order,
+                        'multiOptions' => $param['value'],
+                        'decorators' => $this->_getParamDecorators($param['name'],$elementID,$unit,$files)
+                    )
                 );   
                 break;
             }
-
         }
         return $group;
-        
     }
 
-    private function _getParamDecorators($element_id,$unit) {
+    private function _getParamDecorators($param_name,$element_id,$unit,$files) {
+        $viewScriptOptions = array(
+            'viewScript' => 'param.php',
+            'paramName' => $param_name,
+            'unit' => $unit,
+            'element_id' => $element_id,
+            'element_options' => $this->_getElementOptions()
+        );
+        if(!is_null($files))
+            $viewScriptOptions['files'] = $files;
         $decorators = array(
-            array('ViewScript',array(
-                'viewScript' => 'param.php',
-                'unit' => $unit,
-                'element_id' => $element_id,
-                'element_options' => $this->_getElementOptions()
-            ),
+            array('ViewScript',
+            $viewScriptOptions,
             array('label'),
             array('description')
             )
         );
         return $decorators;
     }
-
+    
     /**
      *Process the form data and execute actions as necessary
      *
@@ -196,11 +238,48 @@ class Mmd_Form_Profile extends Omeka_Form
      */
     public static function ProcessPost()
     {
-        //save display profile
+        if(!isset($_REQUEST['mmdProfileId']))
+            return;
+        $profile_id = $_REQUEST['mmdProfileId'];
+        if( $profile_id > 0 ) {
+            $profile = get_record_by_id('MmdProfile',$profile_id);
+        }else
+            $profile = new MmdProfile();
+
+        $profile->name = $_REQUEST['mmdProfileName'];
+        $profile->description = $_REQUEST['mmdProfileDesc'];
+        $profile->viewer = $_REQUEST['mmdProfileViewer'];
+
+        if( isset($_REQUEST['MmdParamElement']) && is_array($_REQUEST['MmdParamElement'] )) {
+            foreach($_REQUEST['MmdParamElement'] as $paramName => $elementId) {
+                $profile->setAuxParam(
+                    $paramName,
+                    $elementId,
+                    0
+                );
+                if(isset($_REQUEST[$paramName]) && $_REQUEST[$paramName]!='') {
+                    $profile->setAuxParam(
+                        $paramName,
+                        $_REQUEST[$paramName],
+                        1
+                    );
+                }
+                $files = isset($_REQUEST['MmdParamFile']) ? $_REQUEST['MmdParamFile'] : array();
+                if(isset($files[$paramName] )) {
+                    $profile->setAuxParam(
+                        $paramName,
+                        array('extensions'=>'xml,tst','multiple'=>'true'),
+                        2
+                    );
+                }
+            }
+        }
+        $profile->save();
     }
 
     private function _getViewerOptions() {
         $viewers = unserialize(get_option('mmd_supported_viewers'));
+        $viewers = array_merge(array('0'=>'Select Viewer'),$viewers);
         return $viewers;
     }
 

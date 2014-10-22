@@ -7,11 +7,12 @@
  * @package MultimediaDisplay
  */
 
-mmd_admin_header(array('Display Profiles','Browse Display Profiles'));
+mmd_admin_header(array('Display Profiles'));
 echo $this->partial('mmd-navigation.php');
 ?>
 <!-- TODO LINK TO ADD PAGE -->
 <div id="primary">
+    <h1>Browse Display Profiles</h1>
     <?php 
     echo flash();
 ?>
@@ -37,7 +38,7 @@ if(empty($profiles)) {
 ?>
       <tr class="mmd-profile" id="profile-<?php echo $profile->id; ?>">
         <td class="mmd-profile-name">
-          <a href="profile/edit/profile/<?php echo $profile->id;?>">
+          <a href="<?php echo url('multimedia-display/profile/edit/profile/'.$profile->id);?>">
              <?php echo($profile->name); ?>
           </a>
         </td class="mmd-profile-viewer">
@@ -49,12 +50,12 @@ if(empty($profiles)) {
          </td>
         <td class="mmd-profile-buttons">
 
-<a href="profile/edit/profile/<?php echo($profile->id);?>">
+<a href="<?php echo url('multimedia-display/profile/edit/profile/'.$profile->id);?>">
 <button class="mmd-profile-edit green button">Edit</button>
 </a>
 
 
-<a href="profile/delete/profile/<?php echo($profile->id);?>">
+<a href="<?php echo url('multimedia-display/profile/delete/profile/'.$profile->id);?>">
 <button class="mmd-profile-delete green button">Delete</button>
 </a>
 

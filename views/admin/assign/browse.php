@@ -36,9 +36,9 @@ if(empty($assigns)) {
 
     foreach($assigns as $assign) {
 ?>      
-  <tr class="mmd-assign" id="profile-<?php echo $assign->id; ?>">
+  <tr class="mmd-assign" id="assign-<?php echo $assign->id; ?>">
         <td class="mmd-assign-profile">
-          <a href="assign/edit/assign/<?php echo $assign->id;?>">
+          <a href="<?php echo url('multimedia-display/assign/edit/assign/'.$assign->id);?>">
             <?php echo($assign->getProfileName()); ?>
           </a>
         </td class="mmd-assign-item-type">
@@ -50,12 +50,12 @@ if(empty($assigns)) {
          </td>
         <td class="mmd-assign-buttons">
 
-<a href="assign/edit/assign/<?php echo($assign->id);?>">
+<a href="<?php echo url('multimedia-display/assign/edit/assign/'.$assign->id);?>">
 <button class="mmd-assign-edit green button">Edit</button>
 </a>
 
 
-<a href="assign/delete/assign/<?php echo($assign->id);?>">
+<a href="<?php echo url('multimedia-display/assign/delete/assign/'.$assign->id);?>">
 <button class="mmd-assign-delete green button">Delete</button>
 </a>
 

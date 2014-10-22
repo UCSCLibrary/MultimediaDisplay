@@ -100,6 +100,7 @@ abstract class Mmd_Abstract_Viewer
 
             if(isset($param['default']) && $param['default'] !== '')
                 $profile->setAuxParam($param['name'],$param['default'],1);
+
             if(isset($param['files'])) {
                 $multiple = ( isset($param['multiple']) && $param['multiple']!= 'single' && $param['multiple'] ) ? 1 : 0;
                 $fileparam = array(

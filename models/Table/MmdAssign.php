@@ -12,4 +12,10 @@
  */
 class Table_MmdAssign extends Omeka_Db_Table
 {
+
+    public function findByProfileId($profile_id) {
+        $profiles = $this->findBy(array('profile_id'=>$profile_id));
+        return $profiles;
+    }
+
 }

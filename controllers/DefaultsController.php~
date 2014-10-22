@@ -8,21 +8,17 @@
  */
 
 /**
- * The MultimediaDisplay index controller class.
+ * The MultimediaDisplay defaults controller class.
  */
-class MultimediaDisplay_IndexController extends Omeka_Controller_AbstractActionController
+class MultimediaDisplay_DefaultsController extends Omeka_Controller_AbstractActionController
 {    
  
 /**
- * The default action to display the setup form and process it.
- *
- * This action runs before loading the main import form. It 
- * processes the form output if there is any, and populates
- * some variables used by the form.
+ * Install the default configuration for a viewer.
  *
  * @return void
  */
-  public function indexAction()
+  public function installAction()
   {
     include_once(dirname(dirname(__FILE__))."/forms/config_form.php");
     $form = new Mmd_Form_Config();

@@ -80,13 +80,16 @@ class MultimediaDisplay_AssignController extends Omeka_Controller_AbstractAction
       //delete the assignment
       $assign_id = $this->_getParam('assign');
       try{
-          $assign = get_record_by_id('MmdAssign',$assign_id);
-          $assign->delete();
+          if($assign = get_record_by_id('MmdAssign',$assign_id)) {
+              $assign->delete();
+              $flashMessenger->addMessage('Assignment deleted successfully','success');
+          } else {
+              $flashMessenger->addMessage('Error deleting assignment. Profile not found.','error');
+              $this->forward('browse');
+          }
       } catch(Exception $e) {
 	  $flashMessenger->addMessage('Error deleting profile assignment','error');
       }
-
-      $flashMessenger->addMessage('Profile assignment deleted successfully','success');
 
       //forward to browse
       $this->forward('browse');

@@ -13,7 +13,6 @@
  */
 class Table_MmdProfile extends Omeka_Db_Table
 {
-
     /**
      * Used to create options for HTML select form elements.
      *
@@ -76,23 +75,17 @@ class Table_MmdProfile extends Omeka_Db_Table
                     if(in_array($file->getExtension,$filetypes))
                         $flag = true;
                 }
-
                 if(!$flag)
                     continue;
-
             }
-
             $profiles[] = $this->find($assignment->profile_id);
-
         }
         return $profiles;
-
     }
 
     /**
      * Retrieve the first profile assigned to a given item or item id
      */
-  
   public function getPrimaryAssignedProfile($item) {
         $profiles = $this->getAssignedProfiles($item);
         if(count($profiles)>0)

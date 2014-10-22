@@ -40,6 +40,11 @@ class MmdProfile extends Omeka_Record_AbstractRecord
     private $_itemMaps;
 
     /**
+     * @var string Parameters to be retrieved from local files
+     */
+    private $_fileParams;
+
+    /**
      * @var object An instance of the Viewer class used by this display profile
      */
     private $_viewer;
@@ -102,14 +107,16 @@ class MmdProfile extends Omeka_Record_AbstractRecord
         $this->_item = is_numeric($item) ? get_record_by_id('Item',$item) : $item;          
     }
 
-public function setAuxParam($name,$value,$static) {
-        if($static) {
+    public function setAuxParam($name,$value,$static) {
+        if($static==1) {
             $this->_staticParams[$name] = $value;
-        } else {
+        } else if($static==0) {
             $this->_itemMaps[$name] = $value;
+        } else {
+            $this->_fileParams[$name] = $value;
         }
     }
-
+/*
     public function getAuxParam($paramName,$item='') {
         if($item==='')
             $item = $this->_item;
@@ -119,7 +126,7 @@ public function setAuxParam($name,$value,$static) {
             return $this->_staticParams[$paramName];
         }
     }
-
+*/
     public function getAuxParams($item = '') {
         if(empty($this->_itemMaps) || empty($this->_staticParams))
             $this->_loadAuxParams();
@@ -128,14 +135,41 @@ public function setAuxParam($name,$value,$static) {
             $item = $this->_item;
         $itemParams = array();
         foreach($this->_itemMaps as $paramName => $element_id) {
-            $record = get_record('ElementText',array('item_id'=>$item->id,'element_id'=>$element_id));
-
+        $record = get_record('ElementText',array('item_id'=>$item->id,'element_id'=>$element_id));
             if(empty($record))
                 continue;
             $itemParams[$paramName] = $record;
         }
+        
+        $fileParams = array();
 
-        return array_merge($this->_staticParams,$itemParams);
+        if(!empty($this->_fileParams)) {
+            $extensions = array();
+            foreach($this->_fileParams as $paramName => $paramInfo) {
+                $paramExtensions = explode(',',$paramInfo['extensions']);
+                if(!empty($paramExtensions)) {
+                    foreach($paramExtensions as $paramExtension) {
+                        $paramExtension = str_replace('.','',$paramExtension);
+                        $extensions[$paramExtension] = $paramName;
+                    }
+                }
+            }
+
+            $fileParams = array();
+            $files = $item->getFiles();
+            if(!empty($files)) {
+                foreach($files as $file) {
+                    $extension = str_replace('.','',$file->getExtension());
+                    if(array_key_exists($extension,$extensions)) {
+                        $paramName = $extensions[$extension];
+                        $fileParams[$paramName][] = $file->getStoragePath('original');
+                    }
+                }
+            }
+        }
+        
+        $params = array_merge($this->_staticParams,$itemParams);
+        return array_merge($params,$fileParams);
     }
 
     public function getStaticParam($paramName) {
@@ -150,6 +184,12 @@ public function setAuxParam($name,$value,$static) {
         return $this->_itemMaps[$paramName];
     }
 
+    public function getFileParam($paramName) {
+        if(empty($this->_fileParams[$paramName]))
+            return false;
+        return $this->_fileParams[$paramName];
+    }
+
     public function getViewer(){
         if(empty($this->_viewer)) {
             $this->setViewerByName($this->viewer);
@@ -157,8 +197,9 @@ public function setAuxParam($name,$value,$static) {
         return $this->_viewer;
     }
 
-    public function head() {
-        return $this->_viewer->head();
+    public function executeViewerHead() {
+        $params = $this->getAuxParams();
+        return $this->getViewer()->viewerHead($params);
     }
 
     public function getBodyHtml($item = '') {
@@ -166,8 +207,13 @@ public function setAuxParam($name,$value,$static) {
         if($item==='')
             $item = $this->_item;
         $params = $this->getAuxParams($item);
-        $rv =  $this->_getJsDefs($item,$params);
-        $rv.=  $this->getViewer()->getBodyHtml($params);
+
+        //foreach($params as $key=>$param)
+        //    echo $key."<br>";
+        //die();
+
+        $rv  =  $this->_getJsDefs($item,$params);
+        $rv .=  $this->getViewer()->getBodyHtml($params);
         return $rv;
     }
 
@@ -179,7 +225,8 @@ public function setAuxParam($name,$value,$static) {
         
         $rv = '<script type="text/javascript">';
         foreach($params as $key => $value) {
-            $rv.= 'var '.$prefix.$key.' = "'.$value.'"; ';
+            if(!is_array($value))
+                $rv.= 'var '.$prefix.$key.' = "'.$value.'"; ';
         }
         $rv.= '</script>';
 
@@ -191,7 +238,7 @@ public function setAuxParam($name,$value,$static) {
 
         $this->_staticParams = array();
 
-        $sql = "SELECT `option`, value FROM `".$db->prefix."MmdProfileAux` WHERE profile_id = ".$this->id." AND static = 1";
+        $sql = "SELECT `option`, `value` FROM `".$db->prefix."MmdProfileAux` WHERE profile_id = ".$this->id." AND static = 1";
         // die($sql);
         $response = $db->query($sql);
 
@@ -201,17 +248,30 @@ public function setAuxParam($name,$value,$static) {
 
         $this->_itemMaps = array();
 
-        $sql = "SELECT `option`, value FROM `".$db->prefix."MmdProfileAux` WHERE profile_id = $this->id AND static = 0";
+        $sql = "SELECT `option`, `value` FROM `".$db->prefix."MmdProfileAux` WHERE profile_id = $this->id AND static = 0";
         $response = $db->query($sql);
 
         foreach($response->fetchAll() as $row) {
             $this->_itemMaps[$row['option']] = $row['value'];
         }
+
+        $this->_fileParams = array();
+
+        $sql = "SELECT `option`, `value`, `multiple` FROM `".$db->prefix."MmdProfileAux` WHERE profile_id = $this->id AND static = 2";
+        $response = $db->query($sql);
+
+        foreach($response->fetchAll() as $row) {
+            $this->_fileParams[$row['option']] = array(
+                'extensions' => $row['value'],
+                'multiple' => $row['multiple']
+            );
+        }
     }
 
     private function _saveAuxParams($db){ 
+
         $auxParams = array();
-        $sql = "Insert into `".$db->prefix."MmdProfileAux` (profile_id, `option`, value, static) values";
+        $sql = "Insert into `".$db->prefix."MmdProfileAux` (profile_id, `option`, value, static, multiple) values";
 
         $flag = false;
 
@@ -219,7 +279,7 @@ public function setAuxParam($name,$value,$static) {
             foreach($this->_staticParams as $key => $value) {
                 if($flag)
                     $sql .= ',';
-                $sql .= " ($this->id,\"$key\", \"$value\", 1)";
+                $sql .= " ($this->id,\"$key\", \"$value\", 1,NULL)";
                 $flag = true;
             }
         }
@@ -227,7 +287,17 @@ public function setAuxParam($name,$value,$static) {
             foreach($this->_itemMaps as $key => $value) {
                 if($flag)
                     $sql .= ',';
-                $sql .= " ($this->id, \"$key\", \"$value\", 0)";
+                $sql .= " ($this->id, \"$key\", \"$value\", 0,NULL)";
+                $flag = true;
+            }
+        }
+        if(is_array($this->_fileParams)) {
+            foreach($this->_fileParams as $key => $params) {
+                $multiple = $params['multiple'] ? 1 : 'NULL';
+                $value = $params['extensions'];
+                if($flag)
+                    $sql .= ',';
+                $sql .= " ($this->id, \"$key\", \"$value\", 2,$multiple)";
                 $flag = true;
             }
         }
