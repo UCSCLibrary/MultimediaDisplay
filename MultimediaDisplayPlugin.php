@@ -67,7 +67,7 @@ class MultimediaDisplayPlugin extends Omeka_Plugin_AbstractPlugin
         queue_js_file('MmdAdminScripts');
         queue_css_file('MultimediaDisplay');
 
-        $this->_applyAssignments();
+        //$this->_applyAssignments();
     }
 
     /**
@@ -161,10 +161,12 @@ class MultimediaDisplayPlugin extends Omeka_Plugin_AbstractPlugin
         //require_once($viewerDir.'AbstractViewer.php');
 
         $viewers = array(
-            'Mirador'=>'Mirador',
+            //'Mirador'=>'Mirador',
             'Ohms'=>'OHMS Viewer',
             'MediaElement'=>'MediaElement.js',
-            //'BookReader'=>'Internet Archive Book Reader',
+            'BookReader'=>'Internet Archive Book Reader',
+            'PanZoom'=>'PanZoom Image Zooming',
+            'OpenSeaDragon'=>'OpenSeaDragon Jpeg2000 Viewer',
             //'Kaltura'=>'Kaltura',
 //            'Youtube'=>'Youtube'
         );

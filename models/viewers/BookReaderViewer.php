@@ -93,7 +93,7 @@ class Mmd_BookReader_Viewer extends Mmd_Abstract_Viewer
      *
      * @return null
      */
-    public function viewerHead() {
+    public function viewerHead($params) {
         $liburl = absolute_url('/plugins/MultimediaDisplay/libraries/bookreader/','',array(),true);
         $liburl = str_replace('admin/','',$liburl);
 
@@ -118,7 +118,10 @@ class Mmd_BookReader_Viewer extends Mmd_Abstract_Viewer
         $liburl = str_replace('admin/','',$liburl);
         ob_start();
 ?>
-        <script type="text/javascript" src="<?php echo($liburl.'BookReaderDeploy.js'); ?>" />
+        
+        <script type="text/javascript">
+        jQuery('#bookreader').prependTo(jQuery('#primary'));
+        </script>
         <?php
         return ob_get_clean();
     }

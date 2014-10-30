@@ -17,8 +17,8 @@ class Mmd_Kaltura_Viewer extends Mmd_Abstract_Viewer
     public function __construct() {
         //parent::__construct();
         $this->setupParameters();
-        $this->name = 'MediaElement';
-        $this->defaultProfileName = 'mediaElementDefault';
+        $this->name = 'Kaltura';
+        $this->defaultProfileName = 'kalturaDefault';
     }
 
      /**
@@ -33,7 +33,7 @@ class Mmd_Kaltura_Viewer extends Mmd_Abstract_Viewer
             'typeName' => 'Kaltura Streaming Media',
             'typeDesc' => 'A video or audio file to be streamed from a Kaltura server',
             'profileName' => $this->defaultProfileName,
-            'viewerName' => 'MediaElement'
+            'viewerName' => 'Kaltura'
         );
         $params = empty($params) ? $defaultParams : $params;
         parent::InstallDefaults($params,$this->_paramInfo);
@@ -92,9 +92,10 @@ class Mmd_Kaltura_Viewer extends Mmd_Abstract_Viewer
      *
      * @return null
      */
-    public function viewerHead() {
-        $libUrl = absolute_url('plugins/MultimediaDisplay/libraries/kaltura/');
-        $libUrl = str_replace('admin/','',$libUrl);
+    public function viewerHead($params) {
+        //$libUrl = absolute_url('plugins/MultimediaDisplay/libraries/kaltura/');
+        //$libUrl = str_replace('admin/','',$libUrl);
+        
     }
 
 
@@ -111,8 +112,8 @@ class Mmd_Kaltura_Viewer extends Mmd_Abstract_Viewer
         $liburl = str_replace('admin/','',$liburl);
         ob_start();
 ?>
-        <script type="text/javascript" src="http://www.kaltura.com/p/475671/sp/47567100/embedIframeJs/uiconf_id/<?php echo $uiConfID;?>/partner_id/475671"></script>
 
+        <script type="text/javascript" src="http://www.kaltura.com/p/475671/sp/47567100/embedIframeJs/uiconf_id/<?php echo $uiConfID;?>/partner_id/475671"></script>
         <object 
           id="kaltura_player_1337299051" 
           name="kaltura_player_1337299051" 
@@ -133,11 +134,16 @@ class Mmd_Kaltura_Viewer extends Mmd_Abstract_Viewer
               <param name="allowNetworking" value="all" />
               <param name="allowScriptAccess" value="always" />
               <param name="bgcolor" value="#000000" /> 
-              <param name="flashVars" value="&{FLAVOR}" />
+          <param name="flashVars" value="&{FLAVOR}" /> //This might fail??
               <span property="media:width" content="<?php $params['width'];?>"></span>
               <span property="media:height" content="<?php $params['height'];?>"></span>
               <span property="media:type" content="application/x-shockwave-flash"></span>
         </object>
+
+          <script>
+          jQuery('object').prependTo(jQuery('#primary'));
+          </script>
+
         <?php
         return ob_get_clean();
     }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Multimedia Display MediaElement Viewer
+ * Multimedia Display OpenSeaDragon Viewer
  * 
  * @copyright Copyright 2014 UCSC Library Digital Initiatives
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GNU GPLv3
@@ -8,17 +8,17 @@
  */
 
 /**
- * Multimedia Display MediaElement Viewer class
+ * Multimedia Display OpenSeaDragon Viewer class
  * 
  */
-class Mmd_MediaElement_Viewer extends Mmd_Abstract_Viewer
+class Mmd_OpenSeaDragon_Viewer extends Mmd_Abstract_Viewer
 {
 
     public function __construct() {
         //parent::__construct();
         $this->setupParameters();
-        $this->name = 'MediaElement';
-        $this->defaultProfileName = 'mediaElementDefault';
+        $this->name = 'OpenSeaDragon';
+        $this->defaultProfileName = 'openSeaDragonDefault';
     }
 
      /**
@@ -30,10 +30,10 @@ class Mmd_MediaElement_Viewer extends Mmd_Abstract_Viewer
      */
     public function installDefaults($params=null) {
         $defaultParams = array(
-            'typeName' => 'Streaming Media',
-            'typeDesc' => 'A video or audio file to be streamed from a standard streaming server',
+            'typeName' => 'Tiled Zoomable Image',
+            'typeDesc' => 'An image file served in jpeg2000 or similar format, allowing for tiled display and deep zoom',
             'profileName' => $this->defaultProfileName,
-            'viewerName' => 'MediaElement'
+            'viewerName' => 'OpenSeaDragon'
         );
         $params = empty($params) ? $defaultParams : $params;
         parent::InstallDefaults($params,$this->_paramInfo);
@@ -47,13 +47,22 @@ class Mmd_MediaElement_Viewer extends Mmd_Abstract_Viewer
     public function setupParameters() {
         $this->_paramInfo = array(
             array(
-                'name' => 'url',
-                'label' => 'URL',
-                'description' => 'URL of streaming media file',
+                'name' => 'images',
+                'label' => 'Image Location',
+                'description' => 'The url of the directory storing the image to zoom into.',
                 'type' => 'string',
-                //'value' => '',    //for enum type only
+                //'value' => '',
                 'required' => 'true',
-                'default' => ''
+                'default' => '',
+//                'files' => ''
+            ),array(
+                'name' => 'dvi',
+                'label' => 'DVI Location',
+                'description' => 'The url of the dvi file which defines the structure of the tiled images.',
+                'type' => 'string',
+                //'value' => '',
+                'required' => 'true',
+                'default' => '',
             ),
             array(
                 'name' => 'width',
@@ -83,11 +92,11 @@ class Mmd_MediaElement_Viewer extends Mmd_Abstract_Viewer
      * @return null
      */
     public function viewerHead($params) {
-        $libUrl = absolute_url('plugins/MultimediaDisplay/libraries/mediaelement/build/');
+        $libUrl = absolute_url('plugins/MultimediaDisplay/libraries/openseadragon/');
         $libUrl = str_replace('admin/','',$libUrl);
 
-        queue_js_url($libUrl.'mediaelement-and-player.min.js');
-        queue_css_url($libUrl.'mediaelementplayer.css');
+        queue_js_url($libUrl.'openseadragon.min.js');
+        
     }
 
     /**
@@ -101,32 +110,15 @@ class Mmd_MediaElement_Viewer extends Mmd_Abstract_Viewer
     public function getBodyHtml($params) 
     {
         ob_start();
-?>
-        <video width="<?php echo($params['width']);?>" height="<?php echo($params['height']);?>" poster="<?php //echo($params['posterFilename']);?>" controls="controls" preload="none">
-           <!-- MP4 for Safari, IE9, iPhone, iPad, Android, and Windows Phone 7 -->
-           <source type="video/mp4" src="<?php echo($params['url']);?>.mp4" />
-           <!-- WebM/VP8 for Firefox4, Opera, and Chrome -->
-           <source type="video/webm" src="<?php echo($params['url']);?>.webm" />
-           <!-- Ogg/Vorbis for older Firefox and Opera versions -->
-           <source type="video/ogg" src="<?php echo($params['url']);?>.ogv" />
-<?php /*
-           <!-- Optional: Add subtitles for each language -->
-           <track kind="subtitles" src="subtitles.srt" srclang="en" />
-           <!-- Optional: Add chapters -->
-           <track kind="chapters" src="chapters.srt" srclang="en" />
-
-      */?>
-           <!-- Flash fallback for non-HTML5 browsers without JavaScript -->
-           <object width="<?php echo($params['width']);?>" height="<?php echo($params['height']);?>" type="application/x-shockwave-flash" data="flashmediaelement.swf">
-              <param name="movie" value="flashmediaelement.swf" />
-              <param name="flashvars" value="controls=true&file=<?php echo($params['url'])?>.mp4" />
-              <!-- Image as a last resort -->
-              <img src="<?php //echo($params['posterFilename']);?>" width="<?php echo($params['width']);?>" height="<?php echo($params['height']);?>" title="No video playback capabilities" />
-           </object>
-        </video>
+        ?>
+        <div id="osd-viewer" width="<php echo $params['width'];?>px" height="<?php echo $params['height'];?>px"></div>
         <script>
-           jQuery('video,audio').prependTo(jQuery('#primary'));
-           jQuery('video,audio').mediaelementplayer(/* Options */);
+        jQuery('#osd-viewer').prependTo(jQuery('primary'));
+        var viewer = OpenSeaDragon({
+          id: "osd-viewer",
+          prefixUrl: "<?php echo $params['images'];?>",
+          tileSources: "<?php echo $params['dzi'];?>"
+        });
         </script>
 <?php
         return ob_get_clean();
