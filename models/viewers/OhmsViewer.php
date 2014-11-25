@@ -157,7 +157,7 @@ class Mmd_Ohms_Viewer extends Mmd_Abstract_Viewer
 
         require_once dirname(dirname(dirname(__FILE__))).'/libraries/ohmsviewer/lib/CacheFile.class.php';
         
-        $plugin_dir = dirname(dirname(dirname($file)));
+        $plugin_dir = dirname(dirname(dirname(__FILE__)));
         echo "plugin-dir: $plugin_dir<br>";
         $cacheFile = CacheFile::getInstance($cachefile,dirname(dirname($plugin_dir)).'/files',$config);
         //dirname(dirname(dirname(dirname(__FILE__)))).'/files'
