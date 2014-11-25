@@ -114,16 +114,36 @@ class Mmd_BookReader_Viewer extends Mmd_Abstract_Viewer
      * linking to stylesheets and javascript libraries
      */
     public function getBodyHtml($params) {   
-        $liburl = absolute_url('plugins/MultimediaDisplay/libraries/bookreader/');
-        $liburl = str_replace('admin/','',$liburl);
-        ob_start();
+        if(false){
+            echo '<div id="BookReader">'.$params[''].'</div>';
+        } else {
 ?>
         
+        <div id="BookReader"></div>
         <script type="text/javascript">
-        jQuery('#bookreader').prependTo(jQuery('#primary'));
+        jQuery('#bookreader').prependTo(jQuery('#content'));
+        br = new BookReader();
+        bookreader("bookreader", ArchiveBook("tomsawyer"));
+
+        br.getPageWidth = function(index) {
+            return 600;
+        }
+        br.getPageHeight = function(index) {
+            return 800;
+        }
+        br.bookTitle= 'Open Library BookReader Presentation';
+        br.bookUrl  = 'http://openlibrary.org';
+        br.init();
+
         </script>
+<?php  }  ?>
+        
+        <script type="text/javascript">
+        jQuery('#bookreader').prependTo(jQuery('#content'));
+        </script>
+
         <?php
-        return ob_get_clean();
+        return true;
     }
 }
 

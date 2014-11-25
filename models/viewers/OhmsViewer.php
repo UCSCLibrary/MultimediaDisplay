@@ -150,8 +150,11 @@ class Mmd_Ohms_Viewer extends Mmd_Abstract_Viewer
         $libDir = dirname(dirname(dirname(__FILE__))).'/libraries/ohmsviewer/';
         $config = parse_ini_file($libDir."config/config.ini",true);
 
-        //todo - do we need paths in addition to urls? probably not.
-        $cachefile = is_array($params['cacheFileName']) ? $params['cacheFileName'][0] : $params['cacheFileName'];
+
+        $cachefile = isset($params['cacheFileName'][0]) ? $params['cacheFileName'][0] : $params['cacheFileName'];
+
+        $cachefile = isset($cachefile['path']) ? $cachefile['path'] : $cachefile;
+
         require_once dirname(dirname(dirname(__FILE__))).'/libraries/ohmsviewer/lib/CacheFile.class.php';
 
         $cacheFile = CacheFile::getInstance($cachefile,'/var/www/html/omeka/files/',$config);
@@ -276,6 +279,8 @@ class Mmd_Ohms_Viewer extends Mmd_Abstract_Viewer
     });
     });
             var cachefile = '<?php echo $cacheFile->cachefile; ?>';
+
+            jQuery("#audio-panel").prependTo(jQuery('#content'));
       </script>
 <?php
         return ob_get_clean();

@@ -53,7 +53,8 @@ class Mmd_MediaElement_Viewer extends Mmd_Abstract_Viewer
                 'type' => 'string',
                 //'value' => '',    //for enum type only
                 'required' => 'true',
-                'default' => ''
+                'default' => '',
+                'files' => 'xml'
             ),
             array(
                 'name' => 'width',
@@ -100,6 +101,10 @@ class Mmd_MediaElement_Viewer extends Mmd_Abstract_Viewer
      */
     public function getBodyHtml($params) 
     {
+        $params['url'] = isset($params['url'][0]) ? $params['url'][0] : $params['url'];
+        $params['url'] = isset($params['url']['url']) ? $params['url']['url'] : $params['url'];
+
+        $params['url'] = strpos($params['url'],'.mp4') ? str_replace('.mp4','',$params['url']) : $params['url'];
         ob_start();
 ?>
         <video width="<?php echo($params['width']);?>" height="<?php echo($params['height']);?>" poster="<?php //echo($params['posterFilename']);?>" controls="controls" preload="none">

@@ -1,7 +1,29 @@
 .description {
     clear: both;
-    margin-bottom: 35px;
+    font-size:1.1em;
+
 }
+
+.mmd-profile-param>label {
+   display:block;
+   float:none;
+   font-size:1.2em;
+}
+
+.mmd-profile-param {
+    margin-bottom:40px;
+}
+
+.mmd-profile-param>select {
+    float:none;
+display:block;
+}
+
+.mmd-profile-param>input {
+   display:block;
+   float:none;
+}
+
 .savebutton {
     float: left;
     clear: both;

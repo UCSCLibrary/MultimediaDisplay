@@ -87,7 +87,7 @@ class Mmd_PanZoom_Viewer extends Mmd_Abstract_Viewer
         $libUrl = absolute_url('plugins/MultimediaDisplay/libraries/panzoom/');
         $libUrl = str_replace('admin/','',$libUrl);
 
-        queue_js_url($libUrl.'jquery.panzoom.js');
+        queue_js_url($libUrl.'panzoom.js');
 //        queue_css_url($libUrl.'mediaelementplayer.css');
     }
 
@@ -105,17 +105,37 @@ class Mmd_PanZoom_Viewer extends Mmd_Abstract_Viewer
             throw new Exception('Item cannot be displayed. No image location specified for PanZoom Viewer.');
             return;
         }
-        ob_start();
 ?>
         <div class="panzoom-elements element">
-        <img src="<?php echo $params['image'];?>" />
+         <div class="panzoom-container">
+<?php
+         if(is_array($params['image'])) {
+             foreach($params['image'] as $image) {
+                 echo '<img src="'.$image['url'].'" class="panzoom-image"/>';
+             }
+         } else {
+             echo '<img src="'.$params['image'].'" class="panzoom-image" />';
+         }
+?>
+         </div>
+         <div class="buttons">
+         <button class="zoom-in">Zoom In</button>
+         <button class="zoom-out">Zoom Out</button>
+         <input class="zoom-range" type="range" step="0.05" min="0.4" max="5">
+         <button class="reset">Reset</button>
+         </div>
         </div>
         <script>
-           jQuery('.panzoom-elements').prependTo(jQuery('#primary'));
-           jQuery('.panzoom-elements').panzoom();
+           jQuery('.panzoom-elements').prependTo(jQuery('#content'));
+           jQuery('.panzoom-image').panzoom({
+             $zoomIn: jQuery(".zoom-in"),
+                   $zoomOut: jQuery(".zoom-out"),
+                   $zoomRange: jQuery(".zoom-range"),
+                   $reset: jQuery(".reset")
+                   });
         </script>
 <?php
-        return ob_get_clean();
+        return true;
     }
 }
 

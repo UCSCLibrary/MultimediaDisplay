@@ -49,6 +49,8 @@ class MmdProfile extends Omeka_Record_AbstractRecord
      */
     private $_viewer;
 
+    private $_item;
+
     /**
      * Load viewer properties when instantiating class
      *
@@ -133,9 +135,10 @@ class MmdProfile extends Omeka_Record_AbstractRecord
 
         if($item==='')
             $item = $this->_item;
+
         $itemParams = array();
         foreach($this->_itemMaps as $paramName => $element_id) {
-        $record = get_record('ElementText',array('item_id'=>$item->id,'element_id'=>$element_id));
+        $record = get_record('ElementText',array('record_id'=>$item->id,'element_id'=>$element_id));
             if(empty($record))
                 continue;
             $itemParams[$paramName] = $record;
@@ -162,12 +165,11 @@ class MmdProfile extends Omeka_Record_AbstractRecord
                     $extension = str_replace('.','',$file->getExtension());
                     if(array_key_exists($extension,$extensions)) {
                         $paramName = $extensions[$extension];
-                        $fileParams[$paramName][] = $file->getStoragePath('original');
+                        $fileParams[$paramName][] = array('url'=>$file->getWebPath('original'), 'path'=>$file->getStoragePath('original'));
                     }
                 }
             }
         }
-        
         $params = array_merge($this->_staticParams,$itemParams);
         return array_merge($params,$fileParams);
     }
@@ -207,10 +209,6 @@ class MmdProfile extends Omeka_Record_AbstractRecord
         if($item==='')
             $item = $this->_item;
         $params = $this->getAuxParams($item);
-
-        //foreach($params as $key=>$param)
-        //    echo $key."<br>";
-        //die();
 
         $rv  =  $this->_getJsDefs($item,$params);
         $rv .=  $this->getViewer()->getBodyHtml($params);

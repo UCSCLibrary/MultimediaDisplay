@@ -218,7 +218,6 @@ class MultimediaDisplayPlugin extends Omeka_Plugin_AbstractPlugin
      */
     public function hookPublicItemsShow($args)
     {
-        
         $item = get_current_record('Item');
         if(empty($item))
             break;
