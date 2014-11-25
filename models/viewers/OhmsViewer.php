@@ -157,7 +157,7 @@ class Mmd_Ohms_Viewer extends Mmd_Abstract_Viewer
 
         require_once dirname(dirname(dirname(__FILE__))).'/libraries/ohmsviewer/lib/CacheFile.class.php';
 
-        $cacheFile = CacheFile::getInstance($cachefile,'/var/www/html/omeka/files',$config);
+        $cacheFile = CacheFile::getInstance($cachefile,dirname(dirname($libDir).'/files',$config);
         //dirname(dirname(dirname(dirname(__FILE__)))).'/files'
 
 
