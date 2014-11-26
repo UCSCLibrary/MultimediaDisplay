@@ -13,7 +13,8 @@
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
 } 
 
-#ohms-main > h2 {
+#ohms-main > h2 {    
+    margin-bottom:5px;
     margin-left: 140px;
     margin-top: 23px;
     padding-top: 10px;

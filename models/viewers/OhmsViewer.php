@@ -299,7 +299,7 @@ class Mmd_Ohms_Viewer extends Mmd_Abstract_Viewer
 
                         });
 
-                        jQuery('#content > h1').after(jQuery("#audio-panel"));
+                        jQuery('#content').find('h1').after(jQuery("#audio-panel"));
                         jQuery("#audio-panel").after(jQuery('#ohms-main'));
       </script>
 <?php
