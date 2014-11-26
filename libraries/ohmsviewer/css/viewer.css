@@ -20,6 +20,10 @@
     padding-top: 10px;
 }
 
+.item-file.application-xml {
+    display: none;
+}
+
 #ohms-main .linenum {
   font-size: 8px;
 }
