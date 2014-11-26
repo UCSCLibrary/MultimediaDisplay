@@ -1,7 +1,6 @@
 <?php
 $fileserver = (isset($config['fileserver']) ? $config['fileserver'] : '');
 $filepath = $cacheFile->media_url;
-
 if(strpos($filepath, 'http://') !== false || strpos($filepath, 'https://') !== false)
 {
 	$linkToMedia = $filepath;

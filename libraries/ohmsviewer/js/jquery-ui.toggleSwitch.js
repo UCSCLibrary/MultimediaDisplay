@@ -6,24 +6,24 @@ jQuery.fn.toggleSwitch = function (params) {
         change: null
     };
 
-    var options = $.extend({}, defaults, params);
+    var options = jQuery.extend({}, defaults, params);
 
-    $(this).each(function (i, item) {
+    jQuery(this).each(function (i, item) {
         generateToggle(item);
     });
 
     function generateToggle(selectObj) {
 
         // create containing element
-        var $contain = $("<div />").addClass("ui-toggle-switch");
+        var $contain = jQuery("<div />").addClass("ui-toggle-switch");
 
         // generate labels
-        $(selectObj).find("option").each(function (i, item) {
-            $contain.append("<label>" + $(item).text() + "</label>");
+        jQuery(selectObj).find("option").each(function (i, item) {
+            $contain.append("<label>" + jQuery(item).text() + "</label>");
         }).end().addClass("ui-toggle-switch");
 
         // generate slider with established options
-        var $slider = $("<div />").slider({
+        var $slider = jQuery("<div />").slider({
             min: 0,
             max: 100,
             animate: "fast",
@@ -35,7 +35,7 @@ jQuery.fn.toggleSwitch = function (params) {
                     toggleValue(self.parentNode, roundedVal);
                 }, 11);
             },
-            range: (options.highlight && !$(selectObj).data("hideHighlight")) ? "max" : null
+            range: (options.highlight && !jQuery(selectObj).data("hideHighlight")) ? "max" : null
         }).width(options.width);
 
         // put slider in the middle
@@ -45,34 +45,34 @@ jQuery.fn.toggleSwitch = function (params) {
 
         // bind interaction
         $contain.delegate("label", "click", function () {
-            if ($(this).hasClass("ui-state-active")) {
+            if (jQuery(this).hasClass("ui-state-active")) {
                 return;
             }
-            var labelIndex = ($(this).is(":first-child")) ? 0 : 1;
+            var labelIndex = (jQuery(this).is(":first-child")) ? 0 : 1;
             toggleValue(this.parentNode, labelIndex);
         });
 
         function toggleValue(slideContain, index) {
-		kwval =   $('#kw').val();      
+		kwval =   jQuery('#kw').val();      
 		if (kwval != 'Keyword' && kwval != '') {
 
-	               $('#search-results').empty();
+	               jQuery('#search-results').empty();
 
-	               $("#kw").prop('disabled', false);
-	               $('span.highlight').removeClass('highlight');
-	               $("#submit-btn").css("display", "inline-block");
-	               $("#clear-btn").css("display", "none");
+	               jQuery("#kw").prop('disabled', false);
+	               jQuery('span.highlight').removeClass('highlight');
+	               jQuery("#submit-btn").css("display", "inline-block");
+	               jQuery("#clear-btn").css("display", "none");
 		}
-            $(slideContain).find("label").eq(index).addClass("ui-state-active").siblings("label").removeClass("ui-state-active");
-            $(slideContain).parent().find("option").eq(index).attr("selected", true);
-            $(slideContain).find(".ui-slider").slider("value", index * 100);
+            jQuery(slideContain).find("label").eq(index).addClass("ui-state-active").siblings("label").removeClass("ui-state-active");
+            jQuery(slideContain).parent().find("option").eq(index).attr("selected", true);
+            jQuery(slideContain).find(".ui-slider").slider("value", index * 100);
         }
 
         // initialise selected option
         $contain.find("label").eq(selectObj.selectedIndex).click();
 
         // add to DOM
-        $(selectObj).parent().append($contain);
+        jQuery(selectObj).parent().append($contain);
 
     }
 };

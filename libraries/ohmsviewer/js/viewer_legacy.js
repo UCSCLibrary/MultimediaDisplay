@@ -59,6 +59,7 @@ jQuery(function($) {
 			swfPath: "swf",
 			supplied: jQuery('#subjectPlayer').attr('rel')
 		});
+      console.log('test');
       }
 
 	// Bugfix...refresh player links after HTML replacement. Move player link hookups into function so it can be called elsewhere in the program. - SD @ Artifex 2013-01-13

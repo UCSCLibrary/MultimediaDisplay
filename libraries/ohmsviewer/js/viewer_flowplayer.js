@@ -2,6 +2,7 @@ jQuery(function($) {
   var loaded = false;
 
   function activateContentPanel() {
+      console.log('activation start');
 	var searchType = $('#search-type').val()
 	if(searchType == 'Transcript') {
 	  //console.log('Transcript');
@@ -41,7 +42,9 @@ jQuery(function($) {
 
   $('#kw').focus();
 
+  console.log('if statement commencing');
   if($('#subjectPlayer')[0]) {
+        console.log('if statement true');
 		jQuery.jPlayer.timeFormat.showHour = true;
 		jQuery("#subjectPlayer").jPlayer({
 			ready: function () {
