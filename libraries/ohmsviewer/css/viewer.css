@@ -140,7 +140,8 @@
   color: #ff0000;
   font-weight: bold;
 }
-#audio-panel {
+#audio-panel {    
+  margin-left: 30px;
   width: 600px;
   /*padding-top: 10px;*/
   text-align: center;

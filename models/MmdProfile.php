@@ -143,9 +143,8 @@ class MmdProfile extends Omeka_Record_AbstractRecord
                 continue;
             $itemParams[$paramName] = $record;
         }
-        
-        $fileParams = array();
 
+        $fileParams = array();
         if(!empty($this->_fileParams)) {
             $extensions = array();
             foreach($this->_fileParams as $paramName => $paramInfo) {
@@ -158,7 +157,6 @@ class MmdProfile extends Omeka_Record_AbstractRecord
                 }
             }
 
-            $fileParams = array();
             $files = $item->getFiles();
             if(!empty($files)) {
                 foreach($files as $file) {

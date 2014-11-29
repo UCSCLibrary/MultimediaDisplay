@@ -55,13 +55,19 @@ class Mmd_Form_Assign extends Omeka_Form
 
         $assign = $this->_assign;
 
-        //die((string)$assign->profile_id);
-
         $db = get_db();
         $table = $db->getTable('MmdProfile');
         $profiles = $db->getTable('MmdProfile')->findPairsForSelectForm();
-        $itemTypes = $db->getTable('ItemType')->findPairsForSelectForm();
-        $collections = $db->getTable('Collection')->findPairsForSelectForm();
+
+        $types = $db->getTable('ItemType')->findPairsForSelectForm();
+        $itemTypes = array('0'=>'Assign No Item Type');
+        foreach($types as $key=>$value)
+            $itemTypes[$key]=$value;
+
+        $cltns = $db->getTable('Collection')->findPairsForSelectForm();
+        $collections = array('0'=>'Assign No Collection');
+        foreach($cltns as $key=>$value)
+            $collections[$key]=$value;
 
 	// Profile
         $this->addElement('select', 'profile_id', array(

@@ -293,14 +293,8 @@ class Mmd_Ohms_Viewer extends Mmd_Abstract_Viewer
     });
 
             var cachefile = '<?php echo $cacheFile->cachefile; ?>';
-
-                        jQuery('#content > h1').click(function(){
-                            console.log('pppp');
-
-                        });
-
-                        jQuery('#content').find('h1').after(jQuery("#audio-panel"));
-                        jQuery("#audio-panel").after(jQuery('#ohms-main'));
+            jQuery('#content').find('h1').after(jQuery("#audio-panel"));
+            jQuery("#audio-panel").after(jQuery('#ohms-main'));
       </script>
 <?php
         return ob_get_clean();

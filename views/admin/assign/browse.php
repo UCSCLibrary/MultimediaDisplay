@@ -16,7 +16,7 @@ echo $this->partial('mmd-navigation.php');
     echo flash();
 ?>
 <a href="<?php echo url('multimedia-display/assign/add');?>">
-<button class="mmd-assign-add big green button">Add New Display Profile </button>
+<button class="mmd-assign-add big green button">Add New Profile Assignment</button>
 </a>
 <?php
 if(empty($assigns)) {

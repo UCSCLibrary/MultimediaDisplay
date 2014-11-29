@@ -251,12 +251,15 @@ class Mmd_Form_Profile extends Omeka_Form
         $profile->viewer = $_REQUEST['mmdProfileViewer'];
 
         if( isset($_REQUEST['MmdParamElement']) && is_array($_REQUEST['MmdParamElement'] )) {
+            $files = isset($_REQUEST['MmdParamFiles']) ? $_REQUEST['MmdParamFiles'] : array();
             foreach($_REQUEST['MmdParamElement'] as $paramName => $elementId) {
-                $profile->setAuxParam(
-                    $paramName,
-                    $elementId,
-                    0
-                );
+                if($elementId > 0) {
+                    $profile->setAuxParam(
+                        $paramName,
+                        $elementId,
+                        0
+                    );
+                }
                 if(isset($_REQUEST[$paramName]) && $_REQUEST[$paramName]!='') {
                     $profile->setAuxParam(
                         $paramName,
@@ -264,8 +267,7 @@ class Mmd_Form_Profile extends Omeka_Form
                         1
                     );
                 }
-                $files = isset($_REQUEST['MmdParamFile']) ? $_REQUEST['MmdParamFile'] : array();
-                if(isset($files[$paramName] )) {
+                if( isset( $files[$paramName] )) {
                     $profile->setAuxParam(
                         $paramName,
                         array('extensions'=>'xml,tst','multiple'=>'true'),
@@ -303,8 +305,8 @@ class Mmd_Form_Profile extends Omeka_Form
          WHERE es.record_type IS NULL OR es.record_type = 'Item' 
         ORDER BY es.name, it.name, e.name";
         $elements = $db->fetchAll($sql);
-        $options = array();
-	//        $options = array('' => __('Select Below'));
+        //$options = array();
+        $options = array('' => __('None Selected'));
         foreach ($elements as $element) {
             $optGroup = $element['item_type_name'] 
                       ? __('Item Type') . ': ' . __($element['item_type_name']) 

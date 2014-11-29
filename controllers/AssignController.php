@@ -122,8 +122,10 @@ class MultimediaDisplay_AssignController extends Omeka_Controller_AbstractAction
       $flashMessenger->addMessage($e->getMessage(),'error');
     }
 
-    if( isset($successMessage) )
+    if( isset($successMessage) ) {
       $flashMessenger->addMessage($successMessage,'success');
+      $this->_helper->redirector('browse');
+    }
 
     $this->view->form = $form;
 

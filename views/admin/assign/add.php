@@ -12,9 +12,18 @@ echo $this->partial('mmd-navigation.php');
 ?>
 
 <div id="primary">
+<section class="seven columns alpha">
     <h1>Add New Profile Assignment</h1>
     <?php echo flash(); ?>
     <?php echo $form; ?>
+</section>
+
+<section class="three columns omega">
+        <div id="save" class="panel">
+          <button type="submit" class="big green button" form='mmd-assign-edit'>Save</button>
+        </div>
+</section>
+
 </div>
 
 <?php

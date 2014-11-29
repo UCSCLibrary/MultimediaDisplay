@@ -63,7 +63,7 @@ class MultimediaDisplayPlugin extends Omeka_Plugin_AbstractPlugin
      *@return void
      */
     public function hookAdminHead()
-    {
+    { 
         queue_js_file('MmdAdminScripts');
         queue_css_file('MultimediaDisplay');
 
@@ -167,6 +167,7 @@ class MultimediaDisplayPlugin extends Omeka_Plugin_AbstractPlugin
             'BookReader'=>'Internet Archive Book Reader',
             'PanZoom'=>'PanZoom Image Zooming',
             'OpenSeaDragon'=>'OpenSeaDragon Jpeg2000 Viewer',
+            'PDF'=>'Embedded PDF Viewer',
             //'Kaltura'=>'Kaltura',
 //            'Youtube'=>'Youtube'
         );
@@ -234,6 +235,7 @@ class MultimediaDisplayPlugin extends Omeka_Plugin_AbstractPlugin
 
     /**
      * Add viewer markup to admin item display pages
+     * (or not)
      * 
      * @param array $args An array of parameters passed by the hook
      * @return void
