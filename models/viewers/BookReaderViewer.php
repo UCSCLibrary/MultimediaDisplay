@@ -36,7 +36,7 @@ class Mmd_BookReader_Viewer extends Mmd_Abstract_Viewer
             'viewerName' => 'BookReader'
         );
         $params = empty($params) ? $defaultParams : $params;
-        parent::InstallDefaults($params,$this->_paramInfo);
+        return parent::InstallDefaults($params,$this->_paramInfo);
     }
 
     /**
@@ -47,22 +47,14 @@ class Mmd_BookReader_Viewer extends Mmd_Abstract_Viewer
     public function setupParameters() {
         $this->_paramInfo = array(
             array(
-                'name' => 'title',
-                'label' => 'Title',
-                'description' => 'The title of this book, to be displayed in the BookReader header',
-                'type' => 'string',
-                //'value' => '',    //for enum type only
-                'required' => 'false',
-                'default' => ''
-            ),
-            array(
                 'name' => 'url',
                 'label' => 'Url',
                 'description' => 'The URL associated with the content of this book. If this parameter is not set, Omeka will look for the pages of the book as files attached to this item.',
                 'type' => 'string',
                 //'value' => '',
                 'required' => 'false',
-                'default' => ''
+                'default' => '',
+                'files' => 'bmp,jpg,gif,png'
             ),
             array(
                 'name' => 'width',
@@ -71,7 +63,7 @@ class Mmd_BookReader_Viewer extends Mmd_Abstract_Viewer
                 'type' => 'int',
                 //'value' => '',
                 'required' => 'false',
-                'default' => ''
+                'default' => '800'
             ),
             array(
                 'name' => 'height',
@@ -80,7 +72,7 @@ class Mmd_BookReader_Viewer extends Mmd_Abstract_Viewer
                 'type' => 'int',
                 //'value' => '',
                 'required' => 'false',
-                'default' => ''
+                'default' => '600'
             )
         );
 
@@ -94,15 +86,17 @@ class Mmd_BookReader_Viewer extends Mmd_Abstract_Viewer
      * @return null
      */
     public function viewerHead($params) {
-        $liburl = absolute_url('/plugins/MultimediaDisplay/libraries/bookreader/','',array(),true);
-        $liburl = str_replace('admin/','',$liburl);
+        if(is_array($params['url'])) {           
+            $liburl = absolute_url('/plugins/MultimediaDisplay/libraries/bookreader/','',array(),true);
+            $liburl = str_replace('admin/','',$liburl);
 
-        queue_js_url('http://www.archive.org/bookreader/jquery-ui-1.8.5.custom.min.js');
-        queue_js_url('http://www.archive.org/bookreader/dragscrollable.js');
-        queue_js_url('http://www.archive.org/bookreader/jquery.colorbox-min.js');
-        queue_js_url('http://www.archive.org/bookreader/jquery.ui.ipad.js');
-        queue_js_url('http://www.archive.org/bookreader/jquery.bt.min.js');
-        queue_js_url($liburl.'BookReader.js');
+            queue_js_url('http://www.archive.org/bookreader/jquery-ui-1.8.5.custom.min.js');
+            queue_js_url('http://www.archive.org/bookreader/dragscrollable.js');
+            queue_js_url('http://www.archive.org/bookreader/jquery.colorbox-min.js');
+            queue_js_url('http://www.archive.org/bookreader/jquery.ui.ipad.js');
+            queue_js_url('http://www.archive.org/bookreader/jquery.bt.min.js');
+            queue_js_url($liburl.'BookReader.js');
+        }
     }
 
     /**
@@ -114,8 +108,22 @@ class Mmd_BookReader_Viewer extends Mmd_Abstract_Viewer
      * linking to stylesheets and javascript libraries
      */
     public function getBodyHtml($params) {   
-        if(false){
-            echo '<div id="BookReader">'.$params[''].'</div>';
+        if(!is_array($params['url'])){
+            $split = explode('archive.org/stream/',$params['url']);
+            if(count($split)>1)
+                $url = $split[1];
+            $split = explode('#',$url);
+            if(count($split)>1)
+                $url = $split[0];
+            
+            ?>
+            <div id="bookreader-div">
+            <iframe src="http://www.archive.org/stream/<?php echo $url;?>#mode/2up?ui=embed" width="<?php echo $params['width'];?>" height="<?php echo $params['height'];?>"></iframe>
+            <?php 
+            //'.$params[''].'
+            ?></div>
+            <?php
+            //return;
         } else {
 ?>
         
@@ -126,12 +134,12 @@ class Mmd_BookReader_Viewer extends Mmd_Abstract_Viewer
         bookreader("bookreader", ArchiveBook("tomsawyer"));
 
         br.getPageWidth = function(index) {
-            return 600;
+            return <?php echo $params['width'];?>;
         }
         br.getPageHeight = function(index) {
-            return 800;
+            return <?php echo $params['width'];?>;
         }
-        br.bookTitle= 'Open Library BookReader Presentation';
+        br.bookTitle= '';
         br.bookUrl  = 'http://openlibrary.org';
         br.init();
 
@@ -139,7 +147,7 @@ class Mmd_BookReader_Viewer extends Mmd_Abstract_Viewer
 <?php  }  ?>
         
         <script type="text/javascript">
-        jQuery('#bookreader').prependTo(jQuery('#content'));
+        jQuery('#content').find('h1').after(jQuery('#bookreader-div'));
         </script>
 
         <?php

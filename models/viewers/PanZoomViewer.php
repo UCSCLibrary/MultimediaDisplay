@@ -36,7 +36,7 @@ class Mmd_PanZoom_Viewer extends Mmd_Abstract_Viewer
             'viewerName' => 'PanZoom'
         );
         $params = empty($params) ? $defaultParams : $params;
-        parent::InstallDefaults($params,$this->_paramInfo);
+        return parent::InstallDefaults($params,$this->_paramInfo);
     }
 
     /**

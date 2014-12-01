@@ -36,7 +36,7 @@ class Mmd_OpenSeaDragon_Viewer extends Mmd_Abstract_Viewer
             'viewerName' => 'OpenSeaDragon'
         );
         $params = empty($params) ? $defaultParams : $params;
-        parent::InstallDefaults($params,$this->_paramInfo);
+        return parent::InstallDefaults($params,$this->_paramInfo);
     }
 
     /**

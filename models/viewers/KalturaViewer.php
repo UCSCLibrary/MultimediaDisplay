@@ -36,7 +36,7 @@ class Mmd_Kaltura_Viewer extends Mmd_Abstract_Viewer
             'viewerName' => 'Kaltura'
         );
         $params = empty($params) ? $defaultParams : $params;
-        parent::InstallDefaults($params,$this->_paramInfo);
+        return parent::InstallDefaults($params,$this->_paramInfo);
     }
 
     /**
@@ -53,7 +53,7 @@ class Mmd_Kaltura_Viewer extends Mmd_Abstract_Viewer
                 'type' => 'string',
                 //'value' => '',    //for enum type only
                 'required' => 'true',
-                'default' => ''
+                'default' => '8129212'
             ),
             array(
                 'name' => 'entryID',
@@ -71,7 +71,7 @@ class Mmd_Kaltura_Viewer extends Mmd_Abstract_Viewer
                 'type' => 'int',
                 //'value' => '',
                 'required' => 'false',
-                'default' => ''
+                'default' => '600'
             ),
             array(
                 'name' => 'height',
@@ -80,7 +80,7 @@ class Mmd_Kaltura_Viewer extends Mmd_Abstract_Viewer
                 'type' => 'int',
                 //'value' => '',
                 'required' => 'false',
-                'default' => ''
+                'default' => '400'
             )
         );
     }
@@ -110,10 +110,9 @@ class Mmd_Kaltura_Viewer extends Mmd_Abstract_Viewer
     public function getBodyHtml($params) {
         $liburl = absolute_url('plugins/MultimediaDisplay/libraries/kaltura/');
         $liburl = str_replace('admin/','',$liburl);
-        ob_start();
 ?>
 
-        <script type="text/javascript" src="http://www.kaltura.com/p/475671/sp/47567100/embedIframeJs/uiconf_id/<?php echo $uiConfID;?>/partner_id/475671"></script>
+        <script type="text/javascript" src="http://www.kaltura.com/p/475671/sp/47567100/embedIframeJs/uiconf_id/<?php echo $params['uiconfID'];?>/partner_id/475671"></script>
         <object 
           id="kaltura_player_1337299051" 
           name="kaltura_player_1337299051" 
@@ -127,25 +126,26 @@ class Mmd_Kaltura_Viewer extends Mmd_Abstract_Viewer
           xmlns:dc="http://purl.org/dc/terms/" 
           xmlns:media="http://search.yahoo.com/searchmonkey/media/" 
           rel="media:video" 
-          resource="http://www.kaltura.com/index.php/kwidget/cache_st/1337299051/wid/_475671/uiconf_id/<?php echo $params['uiConfID'];?>/entry_id/<?php echo $params['entryID'];?>" 
-          data="http://www.kaltura.com/index.php/kwidget/cache_st/1337299051/wid/_475671/uiconf_id/<?php echo $params['uiConfID'];?> . '/entry_id/<?php echo $params['entryID'];?>"
+          resource="http://www.kaltura.com/index.php/kwidget/cache_st/1337299051/wid/_475671/uiconf_id/<?php echo $params['uiconfID'];?>/entry_id/<?php echo $params['entryID'];?>" 
+          data="http://www.kaltura.com/index.php/kwidget/cache_st/1337299051/wid/_475671/uiconf_id/<?php echo $params['uiconfID'];?>/entry_id/<?php echo $params['entryID'];?>"
         >
               <param name="allowFullScreen" value="true" />
               <param name="allowNetworking" value="all" />
               <param name="allowScriptAccess" value="always" />
               <param name="bgcolor" value="#000000" /> 
-          <param name="flashVars" value="&{FLAVOR}" /> //This might fail??
+       <?php
+          //<param name="flashVars" value="&{FLAVOR}" />//This might fail?? !>
+          ?>
               <span property="media:width" content="<?php $params['width'];?>"></span>
               <span property="media:height" content="<?php $params['height'];?>"></span>
               <span property="media:type" content="application/x-shockwave-flash"></span>
         </object>
-
           <script>
-          jQuery('object').prependTo(jQuery('#primary'));
+       jQuery('#kaltura_player_1337299051').insertAfter(jQuery('#content').find('h1'));
           </script>
 
         <?php
-        return ob_get_clean();
+        return ;
     }
 
 }

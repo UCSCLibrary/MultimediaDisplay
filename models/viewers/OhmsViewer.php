@@ -37,8 +37,6 @@ class Mmd_Ohms_Viewer extends Mmd_Abstract_Viewer
         );
         $params = empty($params) ? $defaultParams : $params;
         return parent::InstallDefaults($params,$this->_paramInfo);
-
-        //TODO - create temp dir within files directory
     }
     
     /**

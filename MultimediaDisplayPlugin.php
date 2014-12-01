@@ -168,7 +168,7 @@ class MultimediaDisplayPlugin extends Omeka_Plugin_AbstractPlugin
             'PanZoom'=>'PanZoom Image Zooming',
             'OpenSeaDragon'=>'OpenSeaDragon Jpeg2000 Viewer',
             'PDF'=>'Embedded PDF Viewer',
-            //'Kaltura'=>'Kaltura',
+            'Kaltura'=>'Kaltura',
 //            'Youtube'=>'Youtube'
         );
         set_option('mmd_supported_viewers',serialize($viewers));

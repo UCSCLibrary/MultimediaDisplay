@@ -12,6 +12,13 @@
  */
 class MultimediaDisplay_DefaultsController extends Omeka_Controller_AbstractActionController
 {    
+
+    public function indexAction() 
+    {
+        
+        $this->view->viewers = unserialize(get_option('mmd_supported_viewers'));
+
+    }
  
 /**
  * Install the default configuration for a viewer.

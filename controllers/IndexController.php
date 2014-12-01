@@ -24,27 +24,17 @@ class MultimediaDisplay_IndexController extends Omeka_Controller_AbstractActionC
  */
   public function indexAction()
   {
-    include_once(dirname(dirname(__FILE__))."/forms/config_form.php");
-    $form = new Mmd_Form_Config();
-
-    //initialize flash messenger for success or fail messages
-    $flashMessenger = $this->_helper->FlashMessenger;
-
-    try{
-      if ($this->getRequest()->isPost()){
-	if($form->isValid($this->getRequest()->getPost()))
-	  $successMessage = Mmd_Form_Config::ProcessPost();
-	else 
-	  $flashMessenger->addMessage('Sorry, we\'re having trouble processing your changes. Please check your form entries and try again.','error');
-      } 
-    } catch (Exception $e){
-      $flashMessenger->addMessage($e->getMessage(),'error');
-    }
-
-    if(isset($successMessage))
-      $flashMessenger->addMessage($successMessage,'success');
-    $this->view->form = $form;
+      if($this->_defaultsInstalled()) 
+          $this->_helper->redirector->gotoUrl('multimedia-display/profile');
+      else 
+          $this->_helper->redirector->gotoUrl('multimedia-display/defaults');
+      
   }
 
-
+  private function _defaultsInstalled() {
+      $db = get_db();
+      $sql = "select * from `".$db->prefix."MmdProfileAux`";
+      $response = $db->query($sql);
+      return $response->fetch() ? true : false;
+  }
 }

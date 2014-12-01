@@ -36,7 +36,7 @@ class Mmd_PDF_Viewer extends Mmd_Abstract_Viewer
             'viewerName' => 'PDF'
         );
         $params = empty($params) ? $defaultParams : $params;
-        parent::InstallDefaults($params,$this->_paramInfo);
+        return parent::InstallDefaults($params,$this->_paramInfo);
     }
 
     /**
@@ -131,8 +131,8 @@ class Mmd_PDF_Viewer extends Mmd_Abstract_Viewer
         <canvas id="pdf-viewer" width="600" height="800"></canvas>
         </div>
         <script type="text/javascript">
-        jQuery('#content').find('h1').after(jQuery(jQuery('#pdf-container')));
-        jQuery('#content').find('h1').after(jQuery(jQuery('#pdf-viewer-controls')));
+        jQuery('#content').find('h1').after(jQuery('#pdf-container'));
+        jQuery('#content').find('h1').after(jQuery('#pdf-viewer-controls'));
         </script>
         <style>
         #pdf-container {

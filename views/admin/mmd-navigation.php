@@ -13,7 +13,7 @@
 <?php
     
     $navArray = array(
-        'Setup' => array('label'=>__('Setup'), 'uri'=>url('multimedia-display') ),
+        'Setup' => array('label'=>__('Setup'), 'uri'=>url('multimedia-display/defaults') ),
         'Manage Display Profiles' => array('label'=>__('Manage Display Profiles'), 'uri'=>url('multimedia-display/profile') ),
         'Manage Profile Assignments' => array('label'=> __('Manage Profile Assignments'), 'uri'=>url('multimedia-display/assign') ) 
     );
