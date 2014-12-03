@@ -103,7 +103,7 @@ class Mmd_Form_Assign extends Omeka_Form
             'value'         => (string) $assign->filetypes
         )
         );
-
+/*
         $checked = $assign->default ? 0 : 1;
 	// Default
         $this->addElement('select', 'default', array(
@@ -113,9 +113,9 @@ class Mmd_Form_Assign extends Omeka_Form
             'value'         => $checked
         )
         );
+*/
 
     }
-
 
     /**
      *Process the form data and execute actions as necessary
@@ -129,5 +129,7 @@ class Mmd_Form_Assign extends Omeka_Form
         
         $this->_assign->setPostData($_POST);
         $this->_assign->save();
+        return 'Display Profile Assignment created successfully')
     }
 }
+

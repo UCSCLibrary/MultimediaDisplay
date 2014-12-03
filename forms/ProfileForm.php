@@ -277,11 +277,14 @@ class Mmd_Form_Profile extends Omeka_Form
             }
         }
         $profile->save();
+        return 'Display Profile saved successfully.';
     }
 
     private function _getViewerOptions() {
-        $viewers = unserialize(get_option('mmd_supported_viewers'));
-        $viewers = array_merge(array('0'=>'Select Viewer'),$viewers);
+        $vws = unserialize(get_option('mmd_supported_viewers'));
+        $viewers[0] = 'Select Viewer';
+        foreach($vws as $key=>$value) 
+            $viewers[$key]=$value;
         return $viewers;
     }
 

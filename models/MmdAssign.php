@@ -62,7 +62,7 @@ class MmdAssign extends Omeka_Record_AbstractRecord
     }
 
     public function getCollectionName() {
-        if(is_numeric($this->collection_id)) {
+        if(is_numeric($this->collection_id) && $this->collection_id > 0) {
             $collection = get_record_by_id('Collection',$this->collection_id);
             return $collection->name;
         }

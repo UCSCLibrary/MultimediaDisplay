@@ -126,7 +126,7 @@ class Mmd_PanZoom_Viewer extends Mmd_Abstract_Viewer
          </div>
         </div>
         <script>
-           jQuery('.panzoom-elements').prependTo(jQuery('#content'));
+        jQuery('#content').find('h1').after(jQuery('#panzoom-elements'));
            jQuery('.panzoom-image').panzoom({
              $zoomIn: jQuery(".zoom-in"),
                    $zoomOut: jQuery(".zoom-out"),
