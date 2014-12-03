@@ -289,8 +289,9 @@ class MmdProfile extends Omeka_Record_AbstractRecord
         }
         if(is_array($this->_fileParams)) {
             foreach($this->_fileParams as $key => $params) {
-                $multiple = $params['multiple'] ? 1 : 'NULL';
-                $value = $params['extensions'];
+	      //                $multiple = $params['multiple'] ? 1 : 'NULL';
+              $multiple=0; //legacy  
+	      $value = $params['extensions'];
                 if($flag)
                     $sql .= ',';
                 $sql .= " ($this->id, \"$key\", \"$value\", 2,$multiple)";

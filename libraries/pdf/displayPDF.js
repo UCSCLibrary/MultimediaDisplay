@@ -6,7 +6,7 @@
 PDFJS.getDocument(pdfFile).then(function(pdf) {
     // Using promise to fetch the page
     pdf.getPage(1).then(function(page) {
-	var scale = 1.5;
+	var scale = 1;
 	var viewport = page.getViewport(scale);
 	//
 	// Prepare canvas using PDF page dimensions
@@ -44,7 +44,7 @@ var pdfDoc = null,
 pageNum = 1,
 pageRendering = false,
 pageNumPending = null,
-scale = 1;
+scale = 0.6;
 
 /**
  * Get page info from document, resize canvas accordingly, and render page.
@@ -110,12 +110,12 @@ function onNextPage() {
 }
 
 function onZoomIn() {
-    scale += 0.75;
+    scale = scale * 1.2;
     console.log(scale);
     queueRenderPage(pageNum,scale);
 }
 function onZoomOut() {
-    scale -= 0.75;
+    scale = scale / 1.2;
     console.log(scale);
     queueRenderPage(pageNum,scale);
 }

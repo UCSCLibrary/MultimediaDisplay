@@ -40,7 +40,8 @@ if(!empty($options['files'])) {
   Indicate whether uploaded files of the correct type should be used for this parameter when applicable.   
 </p>
 
-<input class="use-files" type="checkbox" id="use-files-<?php echo $options['element_id'];?>" name="MmdParamFiles[<?php echo $paramName; ?>]" checked="<?php echo $options['files'];?>" /> 
+Use attached files:<input class="use-files" type="checkbox" id="use-files-<?php echo $options['element_id'];?>" name="MmdParamFiles[<?php echo $paramName; ?>]" checked="<?php echo $options['files'];?>" /> 
+File extensions to accept:<input class="profile-extension" type="text" id="extensions-<?php echo $options['element_id'];?>" name="extensions_<?php echo $paramName; ?>" value="<?php echo $options['extensions'];?>" /> 
 <?php
 }?>
 

@@ -110,6 +110,7 @@ class MultimediaDisplay_AssignController extends Omeka_Controller_AbstractAction
 
     //initialize flash messenger for success or fail messages
     $flashMessenger = $this->_helper->FlashMessenger;
+
     try{
       if ($this->getRequest()->isPost()){
 	if($form->isValid($this->getRequest()->getPost()))
@@ -120,10 +121,14 @@ class MultimediaDisplay_AssignController extends Omeka_Controller_AbstractAction
     } catch (Exception $e) {
       $flashMessenger->addMessage($e->getMessage(),'error');
     }
+
     if( isset($successMessage) ) {
       $flashMessenger->addMessage($successMessage,'success');
       $this->_helper->redirector('browse');
     }
+
     $this->view->form = $form;
+
   }
+
 }

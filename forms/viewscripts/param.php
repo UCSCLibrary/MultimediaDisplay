@@ -1,4 +1,4 @@
-    <div class="poop"><h1>poop</h1>
+    <div class="mmd-param">
         <?php echo $this->formLabel($this->element->getName(),
                              $this->element->getLabel()) ?>
         <?php echo $this->{$this->element->helper}(

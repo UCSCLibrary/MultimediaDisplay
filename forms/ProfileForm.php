@@ -143,10 +143,13 @@ class Mmd_Form_Profile extends Omeka_Form
             }else {
                 $value = $profile->getStaticParam($param['name']);
                 $elementID = $profile->getItemMap($param['name']);
+		$fileParam = $profile->getFileParam($param['name']);
             }
 
             //$files = isset( $param['files'] ) ? $profile->getFileParam($param['name']) : null;
             $files = isset( $param['files'] ) ? true : null;
+	    $extensions = is_array($files) ? $files['extensions'] : '';
+	    $extensions = ($fileParam['extensions'] == '') ? $extensions : $fileParam['extensions'];
 
             switch($param['type']) {
 
@@ -158,7 +161,7 @@ class Mmd_Form_Profile extends Omeka_Form
                     'description' => __($param['description']),
                     'value' => $value,
                     'order' => $order,
-                    'decorators' => $this->_getParamDecorators($param['name'],$elementID,$unit,$files)
+                    'decorators' => $this->_getParamDecorators($param['name'],$elementID,$unit,$files,$extensions)
                 )
                 );   
                 break;
@@ -171,7 +174,7 @@ class Mmd_Form_Profile extends Omeka_Form
                     'description' => __($param['description']),
                     'value' => $value,
                     'order' => $order,
-                    'decorators' => $this->_getParamDecorators($param['name'],$elementID,$unit,$files),
+                    'decorators' => $this->_getParamDecorators($param['name'],$elementID,$unit,$files,$extensions),
                     'validators' => array('digits')
                 )
                 );   
@@ -185,7 +188,7 @@ class Mmd_Form_Profile extends Omeka_Form
                     'description' => __($param['description']),
                     'value' => $value,
                     'order' => $order,
-                    'decorators' => $this->_getParamDecorators($param['name'],$elementID,$unit,$files),
+                    'decorators' => $this->_getParamDecorators($param['name'],$elementID,$unit,$files,$extensions),
                     'validators' => array('float')
                 )
                 );   
@@ -202,7 +205,7 @@ class Mmd_Form_Profile extends Omeka_Form
                         'value' => $value,
                         'order' => $order,
                         'multiOptions' => $param['value'],
-                        'decorators' => $this->_getParamDecorators($param['name'],$elementID,$unit,$files)
+                        'decorators' => $this->_getParamDecorators($param['name'],$elementID,$unit,$files,$extensions)
                     )
                 );   
                 break;
@@ -211,7 +214,11 @@ class Mmd_Form_Profile extends Omeka_Form
         return $group;
     }
 
-    private function _getParamDecorators($param_name,$element_id,$unit,$files) {
+    private function _getDefaultViewerExtensions($paramName) {
+      return 'jpg,gif';
+    } 
+
+    private function _getParamDecorators($param_name,$element_id,$unit,$files,$extensions=null) {
         $viewScriptOptions = array(
             'viewScript' => 'param.php',
             'paramName' => $param_name,
@@ -221,6 +228,10 @@ class Mmd_Form_Profile extends Omeka_Form
         );
         if(!is_null($files))
             $viewScriptOptions['files'] = $files;
+        if(!is_null($extensions))
+            $viewScriptOptions['extensions'] = $extensions;
+	else
+	  $viewScriptOptions['extensions'] = $this->_getDefaultViewerExtensions($param_name);
         $decorators = array(
             array('ViewScript',
             $viewScriptOptions,
@@ -268,23 +279,23 @@ class Mmd_Form_Profile extends Omeka_Form
                     );
                 }
                 if( isset( $files[$paramName] )) {
+		  //		  die($_REQUEST['extensions_'.$paramName]);
                     $profile->setAuxParam(
                         $paramName,
-                        array('extensions'=>'xml,tst','multiple'=>'true'),
+                        //array('extensions'=>$_REQUEST['extensions_'.$paramName],'multiple'=>'true'),
+			array('extensions'=>$_REQUEST['extensions_'.$paramName]),
                         2
                     );
                 }
             }
         }
         $profile->save();
-        return 'Display Profile saved successfully.';
+        return('Display Profile saved successfully.');
     }
 
     private function _getViewerOptions() {
-        $vws = unserialize(get_option('mmd_supported_viewers'));
-        $viewers[0] = 'Select Viewer';
-        foreach($vws as $key=>$value) 
-            $viewers[$key]=$value;
+        $viewers = unserialize(get_option('mmd_supported_viewers'));
+        $viewers = array_merge(array('0'=>'Select Viewer'),$viewers);
         return $viewers;
     }
 

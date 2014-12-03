@@ -101,6 +101,8 @@ class Mmd_PanZoom_Viewer extends Mmd_Abstract_Viewer
      */
     public function getBodyHtml($params) 
     {
+      // print_r($params);
+      //      die('pp');
          if(empty($params['image'])) {
             throw new Exception('Item cannot be displayed. No image location specified for PanZoom Viewer.');
             return;
@@ -121,21 +123,68 @@ class Mmd_PanZoom_Viewer extends Mmd_Abstract_Viewer
          <div class="buttons">
          <button class="zoom-in">Zoom In</button>
          <button class="zoom-out">Zoom Out</button>
-         <input class="zoom-range" type="range" step="0.05" min="0.4" max="5">
+         <input class="zoom-range" type="range" step="0.05" min="0.1" max="5">
          <button class="reset">Reset</button>
          </div>
         </div>
+
+	    <style>
+	    .panzoom-container {
+	    width:<?php echo $params['width'];?>px;
+    height:<?php echo $params['height']; ?>px;
+	    }
+</style>
+
+
         <script>
-        jQuery('#content').find('h1').after(jQuery('#panzoom-elements'));
-           jQuery('.panzoom-image').panzoom({
-             $zoomIn: jQuery(".zoom-in"),
-                   $zoomOut: jQuery(".zoom-out"),
-                   $zoomRange: jQuery(".zoom-range"),
-                   $reset: jQuery(".reset")
-                   });
+	 jQuery('#itemfiles').hide();
+	 jQuery('#content').find('h1').after(jQuery('.panzoom-elements'));
+	 var canvas = jQuery('.panzoom-image');
+	 var container = canvas.parent();
+	 var image_height = canvas.height();
+	 var image_width = canvas.width();
+	 var container_height = container.height();
+	 var container_width = container.width();
+	 var image_center_left = image_width / 2;
+	 var image_center_top = image_height / 2;
+	 var zoom_factor;
+
+	 if(image_height > image_width)
+	   zoom_factor = container_height / image_height;
+        else
+	  zoom_factor = container_width / image_width;
+
+	 $panzoom = jQuery('.panzoom-image').panzoom({
+	   "minScale": 0.05,
+	     "zoom":zoom_factor,
+	       
+	       $zoomIn: jQuery(".zoom-in"),
+	       $zoomOut: jQuery(".zoom-out"),
+	       $zoomRange: jQuery(".zoom-range"),
+	       $reset: jQuery(".reset")
+	       });
+	       $panzoom.panzoom("zoom",zoom_factor,{animate: false });
+
+	 
+	 //Calculate new image dimensions after zoom
+	 image_width = image_width * zoom_factor;
+	 image_height = image_height * zoom_factor;
+
+	 var image_offset_left = image_center_left - (image_width / 2.0);
+	 var image_offset_top = image_center_top - (image_height / 2.0);
+
+	 //Calculate desired offset for image
+	 var new_offset_left = (container_width - image_width) / 2.0;
+	 var new_offset_top = (container_height - image_height) / 2.0;
+
+	 //Pan to set desired offset for image
+	 var pan_left = new_offset_left - image_offset_left;
+	 var pan_top = new_offset_top - image_offset_top;
+	 	 $panzoom.panzoom("pan", pan_left, pan_top);
+
         </script>
 <?php
-        return true;
+        return ;
     }
 }
 
