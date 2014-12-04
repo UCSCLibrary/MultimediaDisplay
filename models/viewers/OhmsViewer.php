@@ -151,7 +151,9 @@ class Mmd_Ohms_Viewer extends Mmd_Abstract_Viewer
 
         require_once dirname(dirname(dirname(__FILE__))).'/libraries/ohmsviewer/lib/CacheFile.class.php';
         
-        $plugin_dir = dirname(dirname(dirname(__FILE__)));
+        //$plugin_dir = dirname(dirname(dirname(__FILE__)));
+        $plugin_dir = dirname($_SERVER["SCRIPT_FILENAME"]).'/plugins/MultimediaDisplay';
+        //die('plugin_die: '.$plugin_dir);
         $cacheFile = CacheFile::getInstance($cachefile,dirname(dirname($plugin_dir)).'/files',$config);
         //$cacheFile = CacheFile::getInstance($cachefile,'/var/www/html/omeka/files',$config);
         //dirname(dirname(dirname(dirname(__FILE__)))).'/files'
@@ -172,7 +174,7 @@ class Mmd_Ohms_Viewer extends Mmd_Abstract_Viewer
 	</script>
         <div id="audio-panel">
         <?php 
-        //include_once dirname(dirname(dirname(__FILE__))).'/libraries/ohmsviewer/tmpl/player_'.$cacheFile->playername.'.tmpl.php'; 
+                        //include_once dirname(dirname(dirname(__FILE__))).'/libraries/ohmsviewer/tmpl/player_'.$cacheFile->playername.'.tmpl.php'; 
         include_once dirname(dirname(dirname(__FILE__))).'/libraries/ohmsviewer/tmpl/player_legacy.tmpl.php'; 
 ?>
         </div>
