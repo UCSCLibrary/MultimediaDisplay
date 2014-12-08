@@ -1,16 +1,24 @@
 <?php
 
 $mediaFormat = 	substr($cacheFile->file_name, -3, 3);
+
 if(isset($config['fileserver'])) {
-	$linkToMedia = $cacheFile->file_name;
+    $linkToMedia = $cacheFile->file_name;
     if($linkToMedia === ".mp3") {
     	$linkToMedia = $cacheFile->media_url;
     }
-	$linkToMedia = '//' . $config['fileserver'] . $linkToMedia;
+    $linkToMedia = '//' . $config['fileserver'] . $linkToMedia;
 }
 else
 {  
 	$linkToMedia = $cacheFile->media_url;
+}
+//die($cacheFile->media_url);
+
+if(substr($cacheFile->media_url,0,4) == 'rtmp') {
+    $linkToMedia = $cacheFile->media_url;
+    $rtmp = true;
+    $mediaFormat = 'rtmpa';
 }
 
 if($cacheFile->hasVideo == 1): 

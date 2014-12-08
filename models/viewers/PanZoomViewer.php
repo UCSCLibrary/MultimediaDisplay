@@ -137,9 +137,8 @@ class Mmd_PanZoom_Viewer extends Mmd_Abstract_Viewer
 
 
         <script>
-	 jQuery('#itemfiles').hide();
-	 jQuery('#content').find('h1').after(jQuery('.panzoom-elements'));
-	 var canvas = jQuery('.panzoom-image');
+    function resetPanzoom() {
+	   var canvas = jQuery('.panzoom-image');
 	 var container = canvas.parent();
 	 var image_height = canvas.height();
 	 var image_width = canvas.width();
@@ -153,19 +152,7 @@ class Mmd_PanZoom_Viewer extends Mmd_Abstract_Viewer
 	   zoom_factor = container_height / image_height;
         else
 	  zoom_factor = container_width / image_width;
-
-	 $panzoom = jQuery('.panzoom-image').panzoom({
-	   "minScale": 0.05,
-	     "zoom":zoom_factor,
-	       
-	       $zoomIn: jQuery(".zoom-in"),
-	       $zoomOut: jQuery(".zoom-out"),
-	       $zoomRange: jQuery(".zoom-range"),
-	       $reset: jQuery(".reset")
-	       });
-	       $panzoom.panzoom("zoom",zoom_factor,{animate: false });
-
-	 
+	 	 
 	 //Calculate new image dimensions after zoom
 	 image_width = image_width * zoom_factor;
 	 image_height = image_height * zoom_factor;
@@ -180,8 +167,23 @@ class Mmd_PanZoom_Viewer extends Mmd_Abstract_Viewer
 	 //Pan to set desired offset for image
 	 var pan_left = new_offset_left - image_offset_left;
 	 var pan_top = new_offset_top - image_offset_top;
-	 	 $panzoom.panzoom("pan", pan_left, pan_top);
+	 $panzoom.panzoom("pan", pan_left, pan_top);
+	 $panzoom.panzoom("zoom",zoom_factor,{animate: false });
 
+	 }
+
+	 jQuery('#itemfiles').hide();
+	 jQuery('#content').find('h1').after(jQuery('.panzoom-elements'));
+
+	 $panzoom = jQuery('.panzoom-image').panzoom({
+	   "minScale": 0.05,
+	     $zoomIn: jQuery(".zoom-in"),
+	     $zoomOut: jQuery(".zoom-out"),
+	     $zoomRange: jQuery(".zoom-range"),
+	     //$reset: jQuery(".reset")
+	  });
+	 resetPanzoom();
+	 jQuery(".reset").click(resetPanzoom);
         </script>
 <?php
         return ;
