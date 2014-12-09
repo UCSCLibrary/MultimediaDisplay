@@ -126,7 +126,11 @@ class Mmd_PDF_Viewer extends Mmd_Abstract_Viewer
         <button id="zoom-out" class="pdf-zoom-button">-</button>
         </div>
         <div id="pdf-container">
-        <canvas id="pdf-viewer" width="<?php echo $params['width'];?>" height="<?php echo $params['height'];?>"></canvas>
+	        <div id="pdf-container-left" class="pdf-page-container">
+        <canvas id="pdf-viewer-left" width="<?php echo $params['width']/2;?>" height="<?php echo $params['height'];?>"></canvas>
+	        </div><div id="pdf-container-right" class="pdf-page-container">
+        <canvas id="pdf-viewer-right" width="<?php echo $params['width']/2;?>" height="<?php echo $params['height'];?>"></canvas>
+	        </div>
         </div>
         <script type="text/javascript">
         jQuery('#content').find('h1').after(jQuery('#pdf-container'));
@@ -143,6 +147,12 @@ class Mmd_PDF_Viewer extends Mmd_Abstract_Viewer
           width: <?php echo $params['width'];?>px;
           overflow: auto;    
           padding-top: 20px;
+        }
+        .pdf-page-container {
+      float:left;
+          height: 100%;
+          width: 50%;
+          overflow: auto;    
         }
 #pdf-viewer-controls {
     max-width:<?php echo $params['width']?>px;

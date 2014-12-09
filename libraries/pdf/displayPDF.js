@@ -44,22 +44,47 @@ var pdfDoc = null,
 pageNum = 1,
 pageRendering = false,
 pageNumPending = null,
-scale = 0.6;
+scale = 0;
 
 /**
  * Get page info from document, resize canvas accordingly, and render page.
  * @param num Page number.
  */
-function renderPage(num,scale) {
+function renderPage(num,scaler) {
     pageRendering = true;
     // Using promise to fetch the page
     pdfDoc.getPage(num).then(function(page) {
-	var viewport = page.getViewport(scale);
-	canvas.height = viewport.height;
-	canvas.width = viewport.width;
+	    if(scaler==0){
+		scaler = canvasLeft.width / page.getViewport(1.0).width;
+		scale = canvasLeft.width / page.getViewport(1.0).width;
+	    }
+	var viewport = page.getViewport(scaler);
+	canvasLeft.height = viewport.height;
+	canvasLeft.width = viewport.width;
 	// Render PDF page into canvas context
 	var renderContext = {
-	    canvasContext: ctx,
+	    canvasContext: ctxLeft,
+	    viewport: viewport
+	};
+	var renderTask = page.render(renderContext);
+	// Wait for rendering to finish
+	renderTask.promise.then(function () {
+	    pageRendering = false;
+	    if (pageNumPending !== null) {
+		// New page rendering is pending
+		renderPage(pageNumPending,scaler);
+		pageNumPending = null;
+	    }
+	});
+    });
+    // Using promise to fetch the page
+    pdfDoc.getPage(num+1).then(function(page) {
+	var viewport = page.getViewport(scale);
+	canvasRight.height = viewport.height;
+	canvasRight.width = viewport.width;
+	// Render PDF page into canvas context
+	var renderContext = {
+	    canvasContext: ctxRight,
 	    viewport: viewport
 	};
 	var renderTask = page.render(renderContext);
@@ -95,17 +120,17 @@ function onPrevPage() {
     if (pageNum <= 1) {
 	return;
     }
-    pageNum--;
+    pageNum-=2;
     queueRenderPage(pageNum,scale);
 }
 /**
  * Displays next page.
  */
 function onNextPage() {
-    if (pageNum >= pdfDoc.numPages) {
+    if (pageNum+1 >= pdfDoc.numPages) {
 	return;
     }
-    pageNum++;
+    pageNum+=2;
     queueRenderPage(pageNum,scale);
 }
 
@@ -127,8 +152,10 @@ PDFJS.getDocument(pdfFile).then(function (pdfDoc_) {
     document.getElementById('next').addEventListener('click', onNextPage);
     document.getElementById('zoom-in').addEventListener('click', onZoomIn);
     document.getElementById('zoom-out').addEventListener('click', onZoomOut);
-    canvas = document.getElementById('pdf-viewer');
-    ctx = canvas.getContext('2d');
+    canvasLeft = document.getElementById('pdf-viewer-left');
+    canvasRight = document.getElementById('pdf-viewer-right');
+    ctxLeft = canvasLeft.getContext('2d');
+    ctxRight = canvasRight.getContext('2d');
     pdfDoc = pdfDoc_;
     document.getElementById('page_count').textContent = pdfDoc.numPages;
     // Initial/first page rendering
