@@ -59,7 +59,7 @@ class Mmd_MediaElement_Viewer extends Mmd_Abstract_Viewer
             array(
                 'name' => 'width',
                 'label' => 'Width',
-                'description' => 'Width of the media display',
+                'description' => 'Width of the media display (integer number of pixels)',
                 'type' => 'int',
                 //'value' => '',    //for enum type only
                 'required' => 'false',

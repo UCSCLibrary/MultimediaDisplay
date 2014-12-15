@@ -80,8 +80,9 @@ class Mmd_Form_Profile extends Omeka_Form
             'value' => $viewername
         );
         
-        //       if($profile_id)
-        //  $selectViewerArray['disabled']=true;
+        if($profile_id)
+          $selectViewerArray['readonly']='readonly';
+               
 
         $this->addElement('select','mmdProfileViewer',$selectViewerArray);
             
@@ -132,8 +133,9 @@ class Mmd_Form_Profile extends Omeka_Form
         $viewerClass = 'Mmd_'.$viewername."_Viewer";
         $viewer = new $viewerClass();
         $params = $viewer->getParameterInfo();
+
         foreach($params as $i => $param) {
-            $group[]=$param['name'];
+            $group[]=$viewername.'_'.$param['name'];
             $order++;
             $profile->getItemMap($param['name']);
             $unit = isset($param['unit']) ? $param['unit'] : '';
@@ -151,10 +153,11 @@ class Mmd_Form_Profile extends Omeka_Form
 	    $extensions = is_array($files) ? $files['extensions'] : '';
 	    $extensions = ($fileParam['extensions'] == '') ? $extensions : $fileParam['extensions'];
 
+
             switch($param['type']) {
 
             case 'string' :
-                $this->addElement('text',$param['name'], 
+                $this->addElement('text',$viewername.'_'.$param['name'], 
                 array(
                     'label' => __($param['label']),
                     'class' => 'five columns alpha',
@@ -167,7 +170,7 @@ class Mmd_Form_Profile extends Omeka_Form
                 break;
 
             case 'int' :
-                $this->addElement('text',$param['name'], 
+                $this->addElement('text',$viewername.'_'.$param['name'], 
                 array(
                     'label' => __($param['label']),
                     'class' => 'five columns alpha',
@@ -182,7 +185,7 @@ class Mmd_Form_Profile extends Omeka_Form
 
 
             case 'css' :
-                $this->addElement('text',$param['name'], 
+             $this->addElement('text',$viewername.'_'.$param['name'], 
                    array(
                        'label' => __($param['label']),
                        'class' => 'five columns alpha',
@@ -191,14 +194,14 @@ class Mmd_Form_Profile extends Omeka_Form
                        'order' => $order,
                        'decorators' => $this->_getParamDecorators($param['name'],$elementID,$unit,$files,$extensions),
                        'validators' => array(
-                           array('regex', false, '/^[0-9]+(px$)?(%$)?/i')
+                           array('regex', false, '/\d+\s?(px$)?(%$)?/i')
                        )
                    )
                 );   
                 break;
 
             case 'float' :
-                $this->addElement('text',$param['name'],
+                $this->addElement('text',$viewername.'_'.$param['name'],
                 array(
                     'label' => __($param['label']),
                     'class' => 'five columns alpha',
@@ -214,7 +217,7 @@ class Mmd_Form_Profile extends Omeka_Form
             case 'enum' :
                 $this->addElement(
                     'select',
-                    $param['name'],
+                    $viewername.'_'.$param['name'],
                     array(
                         'label' => __($param['label']),
                         'class' => 'five columns alpha',
@@ -288,10 +291,10 @@ class Mmd_Form_Profile extends Omeka_Form
                         0
                     );
                 }
-                if(isset($_REQUEST[$paramName]) && $_REQUEST[$paramName]!='') {
+                if(isset($_REQUEST[$profile->viewer.'_'.$paramName]) && $_REQUEST[$profile->viewer.'_'.$paramName]!='') {
                     $profile->setAuxParam(
                         $paramName,
-                        $_REQUEST[$paramName],
+                        $_REQUEST[$profile->viewer.'_'.$paramName],
                         1
                     );
                 }

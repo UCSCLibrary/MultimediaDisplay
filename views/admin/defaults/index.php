@@ -24,7 +24,7 @@ echo $this->partial('mmd-navigation.php');
     <p>
     If you want to get this up and running quickly, you can use this page to set all this up automatically. For each viewer, this form will create a new item type with fields for any metadata the viewer might require. A default display profile is also created for this viewer, and a profile assignment is created to link the default profile to the default item type. 
     </p>
-    <form id="mmd-install-defaults" action="multimedia-display/defaults/install">
+    <form id="mmd-install-defaults" action="defaults/install">
     <fieldset>
       <legend>Install Default Configurations</legend>
 

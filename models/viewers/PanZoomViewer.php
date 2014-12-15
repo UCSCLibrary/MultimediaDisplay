@@ -59,8 +59,8 @@ class Mmd_PanZoom_Viewer extends Mmd_Abstract_Viewer
             array(
                 'name' => 'width',
                 'label' => 'Width',
-                'description' => 'Width of the media display',
-                'type' => 'int',
+                'description' => 'Width of the media display. Accepts syntax "250px", "250", or "70%". If an integer is given, it is interpreted as a number of pixels.',
+                'type' => 'css',
                 //'value' => '',    //for enum type only
                 'required' => 'false',
                 'default' => '400'
@@ -68,8 +68,8 @@ class Mmd_PanZoom_Viewer extends Mmd_Abstract_Viewer
             array(
                 'name' => 'height',
                 'label' => 'Height',
-                'description' => 'Height of the media display',
-                'type' => 'int',
+                'description' => 'Height of the media display. Accepts syntax "250px", "250", or "70%". If an integer is given, it is interpreted as a number of pixels.',
+                'type' => 'css',
                 //'value' => '',    //for enum type only
                 'required' => 'false',
                 'default' => '300'
@@ -91,6 +91,14 @@ class Mmd_PanZoom_Viewer extends Mmd_Abstract_Viewer
 //        queue_css_url($libUrl.'mediaelementplayer.css');
     }
 
+    private function _filterCssParams($params,$indices) {
+        foreach($indices as $index) {
+            if(is_numeric($params[$index]))
+                $params[$index] = $params[$index].'px';
+        }
+        return $params;
+    }
+
     /**
      * Retrieve body html
      *
@@ -101,6 +109,7 @@ class Mmd_PanZoom_Viewer extends Mmd_Abstract_Viewer
      */
     public function getBodyHtml($params) 
     {
+        $params = $this->_filterCssParams($params,array('width','height'));
       // print_r($params);
       //      die('pp');
          if(empty($params['image'])) {
@@ -130,8 +139,8 @@ class Mmd_PanZoom_Viewer extends Mmd_Abstract_Viewer
 
 	    <style>
 	    .panzoom-container {
-	    width:<?php echo $params['width'];?>px;
-    height:<?php echo $params['height']; ?>px;
+	    width:<?php echo $params['width'];?>;
+    height:<?php echo $params['height']; ?>;
 	    }
 </style>
 
