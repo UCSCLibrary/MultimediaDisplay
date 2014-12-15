@@ -180,6 +180,23 @@ class Mmd_Form_Profile extends Omeka_Form
                 );   
                 break;
 
+
+            case 'css' :
+                $this->addElement('text',$param['name'], 
+                   array(
+                       'label' => __($param['label']),
+                       'class' => 'five columns alpha',
+                       'description' => __($param['description']),
+                       'value' => $value,
+                       'order' => $order,
+                       'decorators' => $this->_getParamDecorators($param['name'],$elementID,$unit,$files,$extensions),
+                       'validators' => array(
+                           array('regex', false, '/^[0-9]+(px$)?(%$)?/i')
+                       )
+                   )
+                );   
+                break;
+
             case 'float' :
                 $this->addElement('text',$param['name'],
                 array(

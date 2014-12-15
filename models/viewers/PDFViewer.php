@@ -59,8 +59,8 @@ class Mmd_PDF_Viewer extends Mmd_Abstract_Viewer
                 array(
                 'name' => 'width',
                 'label' => 'Width',
-                'description' => 'The width in pixels of the panel through which the public views the content of this book.',
-                'type' => 'int',
+                'description' => 'The width in pixels of the panel through which the public views the content of this book. Accepts syntax "250px", "250", or "70%". If an integer is given, it is interpreted as a number of pixels.',
+                'type' => 'css',
                 //'value' => '',
                 'required' => 'false',
                 'default' => '800'
@@ -68,13 +68,21 @@ class Mmd_PDF_Viewer extends Mmd_Abstract_Viewer
             array(
                 'name' => 'height',
                 'label' => 'Height',
-                'description' => 'The height in pixels of the panel through which the public views the content of this book.',
-                'type' => 'int',
+                'description' => 'The height in pixels of the panel through which the public views the content of this book. Accepts syntax "250px", "250", or "70%". If an integer is given, it is interpreted as a number of pixels.',
+                'type' => 'css',
                 //'value' => '',
                 'required' => 'false',
                 'default' => '600'
             )
         );
+    }
+
+    private function _filterCssParams($params,$indices) {
+        foreach($indices as $index) {
+            if(is_numeric($params[$index]))
+                $params[$index] = $params[$index].'px';
+        }
+        return $params;
     }
 
     /**
@@ -112,81 +120,142 @@ class Mmd_PDF_Viewer extends Mmd_Abstract_Viewer
      * linking to stylesheets and javascript libraries
      */
     public function getBodyHtml($params) {
+        $params = $this->_filterCssParams($params,array('width','height'));
 ?>  
-        <div id="pdf-viewer-controls">
+
+        <div id="pdf-container">
+
         <button id="prev" class="pdf-nav-button"><</button>
         <button id="next" class="pdf-nav-button">></button>
-        <span id="page_num_div">
-          Page:
-        <span id="page_num">1</span>
+
+        <div id="pdf-viewer-controls">
+
+        <span id="page_num_div_left" class="page_num_div">
+        <span id="page_num_left">1</span>
         /
-        <span id="page_count"></span>
+        <span class="page_count" id="page_count_left"></span>
         </span>
+
+        <span id="page_num_div_right" class="page_num_div">
+        <span id="page_num_right">1</span>
+        /
+        <span class="page_count" id="page_count_right"></span>
+        </span>
+
         <button id="zoom-in" class="pdf-zoom-button">+</button>
         <button id="zoom-out" class="pdf-zoom-button">-</button>
         </div>
-        <div id="pdf-container">
+
+        <div id="pdf-pages-container">
 	        <div id="pdf-container-left" class="pdf-page-container">
-        <canvas id="pdf-viewer-left" width="<?php echo $params['width']/2;?>" height="<?php echo $params['height'];?>"></canvas>
-	        </div><div id="pdf-container-right" class="pdf-page-container">
-        <canvas id="pdf-viewer-right" width="<?php echo $params['width']/2;?>" height="<?php echo $params['height'];?>"></canvas>
+                   <canvas id="pdf-viewer-left" width="<?php echo $params['halfwidth'];?>" height="<?php echo $params['height'];?>"></canvas>
+	        </div>
+                <div id="pdf-container-right" class="pdf-page-container">
+                    <canvas id="pdf-viewer-right" width="<?php echo $params['halfwidth'];?>" height="<?php echo $params['height'];?>"></canvas>
 	        </div>
         </div>
+
+        </div>
+
         <script type="text/javascript">
         jQuery('#content').find('h1').after(jQuery('#pdf-container'));
-        jQuery('#content').find('h1').after(jQuery('#pdf-viewer-controls'));
+        //jQuery('#pdf-container').prepend();
+        //jQuery('#content').find('h1').after(jQuery('#pdf-viewer-controls'));
 	jQuery(document).ready(function() {
 	    jQuery('#itemfiles').hide();
 	  });
         </script>
         <style>
+        .page_num_div {
+          bottom: 4%;
+          position: absolute;
+            font-size:1.1em;
+         }
+        #page_num_div_left {
+           left:25%;
+        }
+        #page_num_div_right {
+            left:75%;
+        }
+
+//#pdf-container-left {
+//border-right:1px solid black;
+//}
+
         #pdf-container {
-          max-height: <?php echo $params['height'];?>px;
-          max-width: <?php echo $params['width'];?>px;
-          height: <?php echo $params['height'];?>px;
-          width: <?php echo $params['width'];?>px;
+          position:relative;
+          max-height: <?php echo $params['height'];?>;
+          max-width: <?php echo $params['width'];?>;
+          height: <?php echo $params['height'];?>;
+          width: <?php echo $params['width'];?>;    
+          padding-bottom: 20px !important;
+        }
+        #pdf-pages-container {
+          height: 100%;
+          width: 100%;
+    
           overflow: auto;    
           padding-top: 20px;
         }
         .pdf-page-container {
-      float:left;
+        float:left;
           height: 100%;
           width: 50%;
           overflow: auto;    
         }
 #pdf-viewer-controls {
-    max-width:<?php echo $params['width']?>px;
+    //max-width:<?php echo $params['width']?>;
+  width:100%;
+  height:0%
 }
-        #pdf-viewer-controls > .pdf-nav-button {
+
+
+#pdf-container > .pdf-nav-button {
   background: none repeat scroll 0 0 transparent;
     border-radius: 20px;
     font-size: 50pt;
     opacity: 0.5;
-    padding: 15px;
+    padding: 15px;    
+    height: auto;
+    margin: 0;
+    padding: 0 15px;
+position: absolute;
+top: 40%;
+    border: 1px solid black;
+  color: black !important;
+    position: absolute;
        }
         #pdf-viewer-controls > .pdf-zoom-button {
   background: none repeat scroll 0 0 transparent;
     border-radius: 10px;
     font-size: 30pt;
     opacity: 0.5;
-    padding: 5px;
-float:right;
+    padding: 5px;    
+    height: auto;
+    line-height: 0.8em;
+    opacity: 0.5;
+    padding: 0 7px;
+    right: -82%;
        }
         #pdf-viewer-controls > button {
   background: none repeat scroll 0 0 transparent;
     border: 1px solid black;
   color: black !important;
-    position: relative;
+    position: absolute;
        }
+       #pdf-viewer-controls > #zoom-in {
+right:3%;
+}
+       #pdf-viewer-controls > #zoom-out {
+right: 8%;
+ }
 
 #prev {
-    left: 20px;
-  top: <?php echo($params['height'] / 2 - 20);?>px;
+    left: 3%;
 
 }
         #next {
-    left: <?php echo($params['width'] - 200);?>px;
-    top: <?php echo($params['height'] / 2 - 20);?>px;
+          right:3%;
        }
         </style>
         <?php

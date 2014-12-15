@@ -51,13 +51,18 @@ scale = 0;
  * @param num Page number.
  */
 function renderPage(num,scaler) {
+    
     pageRendering = true;
     // Using promise to fetch the page
     pdfDoc.getPage(num).then(function(page) {
-	    if(scaler==0){
-		scaler = canvasLeft.width / page.getViewport(1.0).width;
-		scale = canvasLeft.width / page.getViewport(1.0).width;
-	    }
+	width = jQuery('#pdf-container').width() / 2 - 12;
+	console.log('width: '+width);
+	canvasLeft.width = width;
+	canvasRight.width = width;
+	if(scaler==0){
+	    scaler = canvasLeft.width / page.getViewport(1.0).width;
+	    scale = canvasLeft.width / page.getViewport(1.0).width;
+	}
 	var viewport = page.getViewport(scaler);
 	canvasLeft.height = viewport.height;
 	canvasLeft.width = viewport.width;
@@ -99,7 +104,8 @@ function renderPage(num,scaler) {
 	});
     });
     // Update page counters
-    document.getElementById('page_num').textContent = pageNum;
+    document.getElementById('page_num_left').textContent = pageNum;
+    document.getElementById('page_num_right').textContent = pageNum+1;
 }
 /**
  * If another page rendering in progress, waits until the rendering is
@@ -157,7 +163,8 @@ PDFJS.getDocument(pdfFile).then(function (pdfDoc_) {
     ctxLeft = canvasLeft.getContext('2d');
     ctxRight = canvasRight.getContext('2d');
     pdfDoc = pdfDoc_;
-    document.getElementById('page_count').textContent = pdfDoc.numPages;
+    document.getElementById('page_count_left').textContent = pdfDoc.numPages;
+    document.getElementById('page_count_right').textContent = pdfDoc.numPages;
     // Initial/first page rendering
     renderPage(pageNum,scale);
 }); 
