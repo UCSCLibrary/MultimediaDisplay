@@ -157,7 +157,7 @@ class Mmd_PanZoom_Viewer extends Mmd_Abstract_Viewer
 	 var image_center_top = image_height / 2;
 	 var zoom_factor;
 
-	 if(image_height > image_width)
+	 if(image_height / image_width > container_height / container_width)
 	   zoom_factor = container_height / image_height;
         else
 	  zoom_factor = container_width / image_width;
