@@ -3,8 +3,8 @@
     margin-top: 15px;
     margin-bottom:15px;
 //    padding-top: 20px;
-    width: 90%;
-    height: 370px;
+//    width: 90%;
+//    height: 370px;
     border: 1px solid #c2c2c2;
     border-width: 0 1px;
     background: #ffffff;
@@ -52,7 +52,7 @@
 }
 #ohms-main #transcript-panel {
  // width: 500px;
-  height: 300px;
+ // height: 300px;
   position: relative;
   float: left;
   overflow: auto;

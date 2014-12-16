@@ -59,7 +59,7 @@ class Mmd_PDF_Viewer extends Mmd_Abstract_Viewer
                 array(
                 'name' => 'width',
                 'label' => 'Width',
-                'description' => 'The width in pixels of the panel through which the public views the content of this book. Accepts syntax "250px", "250", or "70%". If an integer is given, it is interpreted as a number of pixels.',
+                'description' => 'The width of the panel through which the public views the content of this book. Accepts syntax "250px", "250", or "70%". If an integer is given, it is interpreted as a number of pixels.',
                 'type' => 'css',
                 //'value' => '',
                 'required' => 'false',
@@ -68,7 +68,7 @@ class Mmd_PDF_Viewer extends Mmd_Abstract_Viewer
             array(
                 'name' => 'height',
                 'label' => 'Height',
-                'description' => 'The height in pixels of the panel through which the public views the content of this book. Accepts syntax "250px", "250", or "70%". If an integer is given, it is interpreted as a number of pixels.',
+                'description' => 'The height of the panel through which the public views the content of this book. Accepts syntax "250px", "250", or "70%". If an integer is given, it is interpreted as a number of pixels.',
                 'type' => 'css',
                 //'value' => '',
                 'required' => 'false',
@@ -79,8 +79,9 @@ class Mmd_PDF_Viewer extends Mmd_Abstract_Viewer
 
     private function _filterCssParams($params,$indices) {
         foreach($indices as $index) {
-            if(is_numeric($params[$index]))
+            if(is_numeric($params[$index])) {
                 $params[$index] = $params[$index].'px';
+            }
         }
         return $params;
     }

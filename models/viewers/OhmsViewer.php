@@ -21,6 +21,16 @@ class Mmd_Ohms_Viewer extends Mmd_Abstract_Viewer
         $this->defaultProfileName = 'ohmsViewerDefault';
     }
 
+    private function _filterCssParams($params,$indices) {
+        foreach($indices as $index) {
+            if(is_numeric($params[$index]))
+                $params[$index] = $params[$index].'px';
+            else if (is_object($params[$index]) && is_numeric($params[$index]->text))
+                $params[$index] = $params[$index]->text.'px';
+        }
+        return $params;
+    }
+
      /**
      * Install default profile
      *
@@ -49,17 +59,17 @@ class Mmd_Ohms_Viewer extends Mmd_Abstract_Viewer
             array(
                 'name' => 'width',
                 'label' => 'Width',
-                'description' => 'The width in pixels of the Ohms Viewer panel through which the public views the content of this book.',
-                'type' => 'int',
+                'description' => 'The width of the Ohms Viewer panel through which the public views the content of this book. Accepts syntax "250px", "250", or "70%". If an integer is given, it is interpreted as a number of pixels.',
+                'type' => 'css',
                 //'value' => '',
                 'required' => 'false',
-                'default' => '500'
+                'default' => '100%'
             ),
             array(
                 'name' => 'height',
                 'label' => 'Height',
-                'description' => 'The height in pixels of the Ohms Viewer panel through which the public views the content of this book.',
-                'type' => 'int',
+                'description' => 'The height of the Ohms Viewer panel through which the public views the content of this book. Accepts syntax "250px", "250", or "70%". If an integer is given, it is interpreted as a number of pixels.',
+                'type' => 'css',
                 //'value' => '',
                 'required' => 'false',
                 'default' => '500'
@@ -136,6 +146,7 @@ class Mmd_Ohms_Viewer extends Mmd_Abstract_Viewer
      * linking to stylesheets and javascript libraries
      */
     public function getBodyHtml($params) {
+        $params = $this->_filterCssParams($params,array('width','height'));
         if(empty($params['cacheFileName'])) {
             throw new Exception('Item cannot be displayed. No cache file specified for Ohms Viewer.');
             return;
@@ -295,6 +306,15 @@ class Mmd_Ohms_Viewer extends Mmd_Abstract_Viewer
             jQuery('#content').find('h1').after(jQuery("#audio-panel"));
             jQuery("#audio-panel").after(jQuery('#ohms-main'));
       </script>
+      <style>
+        #ohms-main {
+           width:<?php echo $params['width'];?>;
+        }
+        #ohms-main #transcript-panel {
+           height:<?php echo $params['height'];?>;
+        }
+
+      </style>
 <?php
         return ob_get_clean();
     }
