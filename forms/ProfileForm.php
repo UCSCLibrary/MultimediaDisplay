@@ -114,6 +114,8 @@ class Mmd_Form_Profile extends Omeka_Form
             array('value' => $profile_id)
         );
 
+	$this->addElement('hash','csrf_token');
+
         // Submit:
         $this->addElement('submit', 'mmd-profile-submit', array(
             'label' => __('Save Display Profile'),

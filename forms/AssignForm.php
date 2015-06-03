@@ -114,6 +114,8 @@ class Mmd_Form_Assign extends Omeka_Form
         )
         );
 
+	$this->addElement('has','csrf_token');
+
     }
 
 
