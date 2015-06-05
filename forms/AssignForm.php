@@ -113,8 +113,8 @@ class Mmd_Form_Assign extends Omeka_Form
             'value'         => $checked
         )
         );
-
-	$this->addElement('has','csrf_token');
+        if(version_compare(OMEKA_VERSION,'2.2.1') >= 0)
+            $this->addElement('hash','csrf_token');
 
     }
 

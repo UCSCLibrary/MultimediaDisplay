@@ -114,7 +114,8 @@ class Mmd_Form_Profile extends Omeka_Form
             array('value' => $profile_id)
         );
 
-	$this->addElement('hash','csrf_token');
+        if(version_compare(OMEKA_VERSION,'2.2.1') >= 0)
+            $this->addElement('hash','csrf_token');
 
         // Submit:
         $this->addElement('submit', 'mmd-profile-submit', array(
